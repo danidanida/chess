@@ -1,0 +1,18 @@
+.cell {
+    width:60px;
+    height:60px;
+}
+
+.cell_white{
+    background-color: #9793cc;
+    
+}
+
+.cell_black{
+    background-color: #4b5198;
+}
+
+.figure_name {
+    margin: 0px;
+    padding:0px;
+}
