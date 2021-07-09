@@ -1,53 +1,54 @@
 import './Board.css';
 import { useState } from 'react';
 import Cell from '../Cell/Cell';
+import { Pawn, King, Bishop, Knight, Rook, Queen } from '../../figures/Figure';
 
 const Board = () => {
 
-
     const figures = [
-        { i: 6, j: 0, type: "pawn", color: 'white', },
-        { i: 6, j: 1, type: "pawn", color: 'white', },
-        { i: 6, j: 2, type: "pawn", color: 'white', },
-        { i: 6, j: 3, type: "pawn", color: 'white', },
-        { i: 6, j: 4, type: "pawn", color: 'white', },
-        { i: 6, j: 5, type: "pawn", color: 'white', },
-        { i: 6, j: 6, type: "pawn", color: 'white', },
-        { i: 6, j: 7, type: "pawn", color: 'white', },
+        new Pawn(true, 6, 0),
+        new Pawn(true, 6, 1),
+        new Pawn(true, 6, 2),
+        new Pawn(true, 6, 3),
+        new Pawn(true, 6, 4),
+        new Pawn(true, 6, 5),
+        new Pawn(true, 6, 6),
+        new Pawn(true, 6, 7),
 
-        { i: 1, j: 0, type: "pawn", color: 'black' },
-        { i: 1, j: 1, type: "pawn", color: 'black' },
-        { i: 1, j: 2, type: "pawn", color: 'black' },
-        { i: 1, j: 3, type: "pawn", color: 'black' },
-        { i: 1, j: 4, type: "pawn", color: 'black' },
-        { i: 1, j: 5, type: "pawn", color: 'black' },
-        { i: 1, j: 6, type: "pawn", color: 'black' },
-        { i: 1, j: 7, type: "pawn", color: 'black' },
+        new Pawn(false, 1, 0),
+        new Pawn(false, 1, 1),
+        new Pawn(false, 1, 2),
+        new Pawn(false, 1, 3),
+        new Pawn(false, 1, 4),
+        new Pawn(false, 1, 5),
+        new Pawn(false, 1, 6),
+        new Pawn(false, 1, 7),
 
-        { i: 7, j: 1, type: "knight", color: 'white' },
-        { i: 7, j: 6, type: "knight", color: 'white' },
+        new Knight(false, 0, 1),
+        new Knight(false, 0, 6),
 
-        { i: 0, j: 1, type: "knight", color: 'black' },
-        { i: 0, j: 6, type: "knight", color: 'black' },
+        new Knight(true, 7, 1),
+        new Knight(true, 7, 6),
 
-        { i: 7, j: 0, type: "rook", color: "white" },
-        { i: 7, j: 7, type: "rook", color: "white" },
+        new Rook(true, 7, 0),
+        new Rook(true, 7, 7),
 
-        { i: 0, j: 0, type: "rook", color: "black" },
-        { i: 0, j: 7, type: "rook", color: "black" },
+        new Rook(false, 0, 0),
+        new Rook(false, 0, 7),
 
-        { i: 7, j: 3, type: "queen", color: "white" },
-        { i: 0, j: 3, type: "queen", color: "black" },
+        new Queen(true, 7, 3),
+        new Queen(false, 0, 3),
 
-        { i: 7, j: 4, type: "king", color: "white" },
-        { i: 0, j: 4, type: "king", color: "black" },
+        new King(true, 7, 4),
+        new King(false, 0, 4),
 
-        { i: 7, j: 2, type: "bishop", color: "white" },
-        { i: 7, j: 5, type: "bishop", color: "white" },
+        new Bishop(true, 7, 2),
+        new Bishop(true, 7, 5),
 
-        { i: 0, j: 2, type: "bishop", color: "black" },
-        { i: 0, j: 5, type: "bishop", color: "black" }
-    ];
+        new Bishop(false, 0, 2),
+        new Bishop(false, 0, 5)
+    ]
+
 
     const [isSelected, setSelected] = useState<SelectedCoordinates>({
         i: '',
@@ -66,7 +67,7 @@ const Board = () => {
             for (let j = 0; j < 8; j++) {
                 const isBlack = ((i + j) % 2) === 0
                 let isSelectedCell = (i === isSelected.i && j === isSelected.j)
-                let filteredArray = figures.filter(f => f.i === i && f.j === j)
+                let filteredArray = figures.filter(f => f.coordinateI === i && f.coordinateJ === j)
                 let currentFigure = filteredArray[0]
                 rows.push(<th key={(i + j).toString()}><Cell figure={currentFigure} selected={isSelectedCell} handleClick={handleClick} color={isBlack} i={i} j={j} /></th>)
             }
@@ -94,4 +95,4 @@ export default Board;
 interface SelectedCoordinates {
     i: number | string,
     j: number | string
-} 
+}
