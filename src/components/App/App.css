@@ -1,9 +1,9 @@
 .App {
-  font-family: 'Otomanopee One', sans-serif;
-  width:100vw;
-  height:100vh;
-  background-color: #FFA75A;
-  display:flex;
-  align-items: center;
-  justify-content: center;
+    font-family: "Otomanopee One", sans-serif;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffa75a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

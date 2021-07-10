@@ -1,11 +1,10 @@
-import { Pawn }  from './Pawn';
-import { King }  from './King';
-import { Queen } from './Queen';
-import { Bishop }  from './Bishop';
-import { Rook}  from './Rook';
-import {Knight } from './Knight';
-import { IFigure } from './Figure';
-
+import { Pawn } from "./Pawn"
+import { King } from "./King"
+import { Queen } from "./Queen"
+import { Bishop } from "./Bishop"
+import { Rook } from "./Rook"
+import { Knight } from "./Knight"
+import { IFigure } from "./Figure"
 
 export const figures = [
     new Pawn(true, 6, 0),
@@ -48,13 +47,13 @@ export const figures = [
     new Bishop(true, 7, 5),
 
     new Bishop(false, 0, 2),
-    new Bishop(false, 0, 5)
+    new Bishop(false, 0, 5),
 ]
 
-export const isFigureOn = (i: number, j: number) : boolean => {
-    return figures.filter(f=>f.coordinateI === i && f.coordinateJ === j).length > 0
+export const isFigureOn = (i: number, j: number): boolean => {
+    return figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0
 }
 
-export const getFigure = (i: number, j: number) : IFigure => {
-    return figures.filter(f=>f.coordinateI === i && f.coordinateJ === j)[0]
+export const getFigure = (i: number, j: number): IFigure => {
+    return figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
 }

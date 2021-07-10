@@ -1,18 +1,17 @@
 .cell {
-    width:60px;
-    height:60px;
+    width: 60px;
+    height: 60px;
 }
 
-.cell_white{
-    background-color: #C68E29;
-    
+.cell_white {
+    background-color: #c68e29;
 }
 
-.cell_black{
-    background-color: #914A0A;
+.cell_black {
+    background-color: #914a0a;
 }
 
 .figure_name {
     margin: 0px;
-    padding:0px;
+    padding: 0px;
 }
