@@ -9,8 +9,8 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
     }
 
     return (
-        <div onClick={handleChange} style={selected ? { backgroundColor: '#FFFFE0' } : moveSuggestion? {border: "2px solid red"} : undefined} className={color ? "cell cell_white" : "cell cell_black"}>
-            {figure && <p className="figure_name" style={figure.color? {color:"white"}:{color:"black"}}> {figure.type} </p>}
+        <div onClick={handleChange} style={selected ? { backgroundColor: 'rgba(246, 244, 186, 0.5)'} : moveSuggestion? {border: "2.5px dashed red"} : undefined} className={color ? "cell cell_white" : "cell cell_black"}>
+            {figure && <p className="figure_name" style={figure.color? {color:"white"}:{color:"black"}}> {figure.type.charAt(0).toUpperCase() + figure.type.slice(1)} </p>}
         </div>
     );
 };

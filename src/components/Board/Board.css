@@ -1,6 +1,8 @@
-.chessboard {
-   padding:20px;
-}
 table {
     border-collapse: collapse;
+}
+
+.chessboard_title {
+    text-align: center;
+    color:#914A0A;
 }

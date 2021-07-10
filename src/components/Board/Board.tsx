@@ -16,6 +16,7 @@ const Board = () => {
       setSelected({ i: "", j: "" });
     }
   };
+  
   const initializeChessBoard = () => {
     let chessBoard = [];
     const selectedFigure = figures.filter(
@@ -25,13 +26,14 @@ const Board = () => {
     for (let i = 0; i < 8; i++) {
       let rows = [];
       for (let j = 0; j < 8; j++) {
+
         const isBlack = (i + j) % 2 === 0;
         const isSelectedCell = i === isSelected.i && j === isSelected.j;
         const currentFigure = figures.filter(
           (f) => f.coordinateI === i && f.coordinateJ === j
         )[0];
         const isSuggestion = selectedFigure && selectedFigure.canMove(i, j);
-        // const canSelectedFigureMove = selectedFigure.canMove(i,j)
+
         rows.push(
           <th key={(i + j).toString()}>
             <Cell
@@ -51,14 +53,14 @@ const Board = () => {
     return chessBoard;
   };
   return (
-    <div className="App">
       <div className="chessboard">
+          <h1 className="chessboard_title"> Chess</h1>
         <table>
-          <thead></thead>
+          <thead>
+          </thead>
           <tbody>{initializeChessBoard()}</tbody>
         </table>
       </div>
-    </div>
   );
 };
 
