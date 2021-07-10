@@ -1,9 +1,9 @@
 interface IFigure {
-  color: boolean
-  coordinateI: number
-  coordinateJ: number
-  type: string
- // canMove(targetI: number, targetJ: number): boolean
+  color: boolean;
+  coordinateI: number;
+  coordinateJ: number;
+  type: string;
+  canMove(targetI: number, targetJ: number): boolean;
 }
 
 export class Pawn implements IFigure {
@@ -17,20 +17,19 @@ export class Pawn implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
-
-  /*canMove(targetI: number, targetJ: number): boolean {
-    if(this.color) {
-      if(targetI - this.coordinateI === 1) {
+  canMove(targetI: number, targetJ: number): boolean {
+    if (this.color) {
+      // if white pawn
+      if (this.coordinateI - 1 === targetI && this.coordinateJ === targetJ) {
         return true;
-      }
-      else return false
+      } else return false;
+    } else {
+      // if black pawn
+      if (this.coordinateI + 1 === targetI && this.coordinateJ === targetJ) {
+        return true;
+      } else return false;
     }
-    else {
-      if(targetI - this.coordinateI === -1) {
-        return true
-    } return false
-  } */
-
+  }
 }
 
 export class King implements IFigure {
@@ -44,7 +43,9 @@ export class King implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
-
+  canMove(targetI: number, targetJ: number): boolean {
+    return true;
+  }
 }
 
 export class Knight implements IFigure {
@@ -58,6 +59,9 @@ export class Knight implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+  canMove(targetI: number, targetJ: number): boolean {
+    return false;
+  }
 }
 
 export class Rook implements IFigure {
@@ -71,7 +75,9 @@ export class Rook implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
-
+  canMove(targetI: number, targetJ: number): boolean {
+    return false;
+  }
 }
 
 export class Queen implements IFigure {
@@ -85,7 +91,9 @@ export class Queen implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
-
+  canMove(targetI: number, targetJ: number): boolean {
+    return false;
+  }
 }
 
 export class Bishop implements IFigure {
@@ -99,11 +107,7 @@ export class Bishop implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
-
+  canMove(targetI: number, targetJ: number): boolean {
+    return false;
+  }
 }
-//const arr: IFigure[] = [new King(), new King(), new Pawn()]
-
-
-
-
-//export { }

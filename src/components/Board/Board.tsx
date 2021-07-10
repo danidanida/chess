@@ -62,14 +62,26 @@ const Board = () => {
     }
     const initializeChessBoard = () => {
         let chessBoard = []
+        const selectedFigure = figures.filter(f => f.coordinateI === isSelected.i && f.coordinateJ === isSelected.j)[0]
+
         for (let i = 0; i < 8; i++) {
             let rows = []
             for (let j = 0; j < 8; j++) {
                 const isBlack = ((i + j) % 2) === 0
-                let isSelectedCell = (i === isSelected.i && j === isSelected.j)
-                let filteredArray = figures.filter(f => f.coordinateI === i && f.coordinateJ === j)
-                let currentFigure = filteredArray[0]
-                rows.push(<th key={(i + j).toString()}><Cell figure={currentFigure} selected={isSelectedCell} handleClick={handleClick} color={isBlack} i={i} j={j} /></th>)
+                const isSelectedCell = (i === isSelected.i && j === isSelected.j)
+                const currentFigure = figures.filter(f => f.coordinateI === i && f.coordinateJ === j)[0]
+                const isSuggestion = selectedFigure && selectedFigure.canMove(i,j)  
+                // const canSelectedFigureMove = selectedFigure.canMove(i,j)
+                rows.push(<th key={(i + j).toString()}>
+                    <Cell
+                        figure={currentFigure}
+                        selected={isSelectedCell}
+                        handleClick={handleClick}
+                        color={isBlack}
+                        moveSuggestion={isSuggestion}
+                        i={i}
+                        j={j} />
+                </th>)
             }
             chessBoard.push(<tr key={(i).toString()}>{rows}</tr>)
         }
