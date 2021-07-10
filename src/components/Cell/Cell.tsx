@@ -2,9 +2,10 @@ import './Cell.css';
 import React from 'react';
 
 const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion }) => {
+    
     function handleChange(e: any) {
         e.preventDefault()
-        if (figure) { handleClick(i, j)}
+       /* if (figure || moveSuggestion)*/  handleClick(i, j)
        
     }
 

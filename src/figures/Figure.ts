@@ -3,5 +3,8 @@ export interface IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean | undefined;
+
+  move(targetI: number, targetJ: number): void;
 }

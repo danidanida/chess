@@ -11,6 +11,7 @@ export class Bishop implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean | undefined {
     for (let i = 0; i < 7; i++) {
       if (
@@ -26,4 +27,10 @@ export class Bishop implements IFigure {
       }
     }
   }
+
+  move(targetI:number, targetJ:number) : void {
+    this.coordinateI = targetI;
+    this.coordinateJ = targetJ;
+}
+
 }

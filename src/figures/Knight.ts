@@ -11,6 +11,7 @@ export class Knight implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean | undefined {
     if (
       ((this.coordinateI - 2 === targetI || this.coordinateI + 2 === targetI) &&
@@ -22,4 +23,9 @@ export class Knight implements IFigure {
       return true;
     }
   }
+
+  move(targetI:number, targetJ:number) : void {
+    this.coordinateI = targetI;
+    this.coordinateJ = targetJ;
+}
 }

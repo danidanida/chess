@@ -11,6 +11,7 @@ export class King implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean | undefined {
     if (this.color) {
       // white king logic
@@ -38,4 +39,10 @@ export class King implements IFigure {
       }
     }
   }
+
+  move(targetI:number, targetJ:number) : void {
+    this.coordinateI = targetI;
+    this.coordinateJ = targetJ;
+}
+
 }

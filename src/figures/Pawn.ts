@@ -11,6 +11,7 @@ export class Pawn implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean {
     if (this.color) {
       // white pawn logic
@@ -33,5 +34,10 @@ export class Pawn implements IFigure {
         return true;
       } else return false;
     }
+  }
+  
+  move(targetI:number, targetJ:number) : void {
+      this.coordinateI = targetI;
+      this.coordinateJ = targetJ;
   }
 }

@@ -11,10 +11,16 @@ export class Rook implements IFigure {
   coordinateI: number;
   coordinateJ: number;
   type: string;
+
   canMove(targetI: number, targetJ: number): boolean | undefined {
     // both colors rook logic
     if (this.coordinateI === targetI || this.coordinateJ === targetJ) {
       return true;
     }
   }
+
+  move(targetI:number, targetJ:number) : void {
+    this.coordinateI = targetI;
+    this.coordinateJ = targetJ;
+}
 }

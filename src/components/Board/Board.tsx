@@ -1,34 +1,70 @@
 import "./Board.css";
 import { useState } from "react";
 import Cell from "../Cell/Cell";
-import { figures } from "../../figures/Figures";
+import { figures, isFigureOn } from "../../figures/Figures";
 
 const Board = () => {
-  const [isSelected, setSelected] = useState<SelectedCoordinates>({
-    i: "",
-    j: "",
+  const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
+    i: undefined,
+    j: undefined,
   });
+
+  const [turn, setTurn] = useState(true);
+
+  const areCoordinatesSelected = () =>
+    selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined;
+
+  const getSelectedFigure = () =>
+    figures.filter(
+      (f) =>
+        f.coordinateI === selectedCoordinates.i &&
+        f.coordinateJ === selectedCoordinates.j
+    )[0];
+  const deselect = () => setSelectedCoordinates({ i: undefined, j: undefined });
 
   const handleClick = (i: number, j: number) => {
     const current = { i, j };
-    setSelected({ i: i, j: j });
-    if (isSelected.i === current.i && isSelected.j === current.j) {
-      setSelected({ i: "", j: "" });
+    if (!areCoordinatesSelected()) {
+      if (isFigureOn(i, j)) {
+        setSelectedCoordinates({ i: i, j: j });
+      }
+    } else {
+      const selectedFigure = getSelectedFigure();
+      if (turn && selectedFigure.color && selectedFigure.canMove(i, j)) {
+        selectedFigure.move(i, j);
+        setTurn(false); 
+        deselect();
+      } else if (
+        !turn &&
+        !selectedFigure.color &&
+        selectedFigure.canMove(i, j)
+      ) {
+        selectedFigure.move(i, j);
+        setTurn(true);
+        deselect();
+      } else {
+        deselect();
+      }
+    }
+    if (
+      selectedCoordinates.i === current.i &&
+      selectedCoordinates.j === current.j
+    ) {
+      deselect();
     }
   };
-  
-  const initializeChessBoard = () => {
+
+  const drawChessBoard = () => {
     let chessBoard = [];
-    const selectedFigure = figures.filter(
-      (f) => f.coordinateI === isSelected.i && f.coordinateJ === isSelected.j
-    )[0];
+
+    const selectedFigure = getSelectedFigure();
 
     for (let i = 0; i < 8; i++) {
       let rows = [];
       for (let j = 0; j < 8; j++) {
-
         const isBlack = (i + j) % 2 === 0;
-        const isSelectedCell = i === isSelected.i && j === isSelected.j;
+        const isSelectedCell =
+          i === selectedCoordinates.i && j === selectedCoordinates.j;
         const currentFigure = figures.filter(
           (f) => f.coordinateI === i && f.coordinateJ === j
         )[0];
@@ -53,20 +89,19 @@ const Board = () => {
     return chessBoard;
   };
   return (
-      <div className="chessboard">
-          <h1 className="chessboard_title"> Chess</h1>
-        <table>
-          <thead>
-          </thead>
-          <tbody>{initializeChessBoard()}</tbody>
-        </table>
-      </div>
+    <div className="chessboard">
+      <h1 className="chessboard_title"> Chess</h1>
+      <table>
+        <thead></thead>
+        <tbody>{drawChessBoard()}</tbody>
+      </table>
+    </div>
   );
 };
 
 export default Board;
 
-interface SelectedCoordinates {
-  i: number | string;
-  j: number | string;
+interface Coordinates {
+  i: number | undefined;
+  j: number | undefined;
 }
