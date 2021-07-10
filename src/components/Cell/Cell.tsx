@@ -28,7 +28,7 @@ interface Props {
    handleClick: (i: number, j: number) => void,
    selected: boolean,
    figure: Figure,
-   moveSuggestion: boolean
+   moveSuggestion: boolean | undefined
 }
 
 export default Cell;
