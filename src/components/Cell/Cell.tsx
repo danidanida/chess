@@ -2,9 +2,13 @@ import "./Cell.css"
 import React from "react"
 
 const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion }) => {
-    function handleChange(e: any) {
+    function handleChange(e: any): void {
         e.preventDefault()
         handleClick(i, j)
+    }
+
+    function capitilizeFirstLetter(string: string): string {
+        return string.charAt(0).toUpperCase() + string.slice(1)
     }
 
     return (
@@ -21,8 +25,7 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
         >
             {figure && (
                 <p className="figure_name" style={figure.color ? { color: "white" } : { color: "black" }}>
-                    {" "}
-                    {figure.type.charAt(0).toUpperCase() + figure.type.slice(1)}{" "}
+                    {capitilizeFirstLetter(figure.type)}
                 </p>
             )}
         </div>

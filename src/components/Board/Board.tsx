@@ -2,6 +2,7 @@ import "./Board.css"
 import { useState } from "react"
 import Cell from "../Cell/Cell"
 import { figures, isFigureOn } from "../../figures/Figures"
+import { IFigure } from '../../figures/Figure';
 
 const Board = () => {
     const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
@@ -11,13 +12,14 @@ const Board = () => {
 
     const [turn, setTurn] = useState<boolean>(true)
 
-    const areCoordinatesSelected = () => selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined
+    const areCoordinatesSelected = (): boolean => selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined
 
-    const getSelectedFigure = () =>
+    const getSelectedFigure = (): IFigure =>
         figures.filter((f) => f.coordinateI === selectedCoordinates.i && f.coordinateJ === selectedCoordinates.j)[0]
-    const deselect = () => setSelectedCoordinates({ i: undefined, j: undefined })
 
-    const handleClick = (i: number, j: number) => {
+    const deselect = (): void => setSelectedCoordinates({ i: undefined, j: undefined })
+
+    const handleClick = (i: number, j: number): void => {
         const current = { i, j }
         if (!areCoordinatesSelected()) {
             if (isFigureOn(i, j)) {
