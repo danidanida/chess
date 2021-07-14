@@ -22,11 +22,12 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
                     : undefined
             }
             className={color ? "cell cell_white" : "cell cell_black"}
-        >
+        >   {/*<span style={{color:"blue"}}>i:{i} j:{j}</span>*/}
             {figure && (
                 <p className="figure_name" style={figure.color ? { color: "white" } : { color: "black" }}>
-                    {capitilizeFirstLetter(figure.type)}
+                    {capitilizeFirstLetter(figure.type)} 
                 </p>
+                
             )}
         </div>
     )

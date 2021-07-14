@@ -1,8 +1,8 @@
 import "./Board.css"
 import { useState } from "react"
 import Cell from "../Cell/Cell"
-import { figures, isFigureOn } from "../../figures/Figures"
-import { IFigure } from '../../figures/Figure';
+import { figures, isFigureOn, getFigure, getDeadWhiteFiguresAmount, getDeadBlackFiguresAmount } from "../../figures/Figures"
+import { IFigure } from "../../figures/Figure"
 
 const Board = () => {
     const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
@@ -12,12 +12,17 @@ const Board = () => {
 
     const [turn, setTurn] = useState<boolean>(true)
 
-    const areCoordinatesSelected = (): boolean => selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined
+    const deadWhiteFiguresAmount = getDeadWhiteFiguresAmount()
+    const deadBlackFiguresAmount = getDeadBlackFiguresAmount()
+
+    const areCoordinatesSelected = (): boolean =>
+        selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined
 
     const getSelectedFigure = (): IFigure =>
         figures.filter((f) => f.coordinateI === selectedCoordinates.i && f.coordinateJ === selectedCoordinates.j)[0]
 
     const deselect = (): void => setSelectedCoordinates({ i: undefined, j: undefined })
+    const stayAtPosition = (): void => setSelectedCoordinates({ i: selectedCoordinates.i, j: selectedCoordinates.j })
 
     const handleClick = (i: number, j: number): void => {
         const current = { i, j }
@@ -28,10 +33,18 @@ const Board = () => {
         } else {
             const selectedFigure = getSelectedFigure()
             if (turn && selectedFigure.color && selectedFigure.canMove(i, j)) {
+                if (isFigureOn(i, j)) {
+                    const targetFigure = getFigure(i, j)
+                    !targetFigure.color ? targetFigure.die() : stayAtPosition()
+                }
                 selectedFigure.move(i, j)
                 setTurn(false)
                 deselect()
             } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j)) {
+                if (isFigureOn(i, j)) {
+                    const deadFigure = getFigure(i, j)
+                    deadFigure.die()
+                }
                 selectedFigure.move(i, j)
                 setTurn(true)
                 deselect()
@@ -81,6 +94,7 @@ const Board = () => {
             <h3 className="chessboard_announcement" style={turn ? { color: "white" } : { color: "black" }}>
                 {turn ? "White turn" : "Black turn"}
             </h3>
+            <h3>Killed white figures {deadWhiteFiguresAmount} and killed black figures {deadBlackFiguresAmount}</h3>
             <table>
                 <thead></thead>
                 <tbody>{drawChessBoard()}</tbody>

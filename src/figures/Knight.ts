@@ -27,4 +27,9 @@ export class Knight implements IFigure {
         this.coordinateI = targetI
         this.coordinateJ = targetJ
     }
+
+    die() {
+        this.coordinateI = -1
+        this.coordinateJ = -1
+    }
 }

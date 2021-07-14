@@ -48,7 +48,14 @@ export const figures = [
 
     new Bishop(false, 0, 2),
     new Bishop(false, 0, 5),
-]
+] 
+/*export const figures = [
+    new Rook(false, 3,3),
+    new Pawn(false, 3,6),
+    new Pawn(false, 3,1),
+    new Pawn(false, 1,3),
+    new Pawn(false, 6,3),
+]*/
 
 export const isFigureOn = (i: number, j: number): boolean => {
     return figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0
@@ -56,4 +63,12 @@ export const isFigureOn = (i: number, j: number): boolean => {
 
 export const getFigure = (i: number, j: number): IFigure => {
     return figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
+}
+
+export const getDeadWhiteFiguresAmount= () => {
+    return figures.filter((f)=> f.color && f.coordinateI === -1 && f.coordinateJ === -1).length
+}
+
+export const getDeadBlackFiguresAmount= () => {
+    return figures.filter((f)=> !f.color && f.coordinateI === -1 && f.coordinateJ === -1).length
 }
