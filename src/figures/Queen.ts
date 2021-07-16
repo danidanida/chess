@@ -1,4 +1,5 @@
 import { IFigure } from "./Figure"
+import { isFigureOn, getFigure } from "./Figures"
 
 export class Queen implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -13,15 +14,122 @@ export class Queen implements IFigure {
     type: string
 
     canMove(targetI: number, targetJ: number): boolean | undefined {
+        const cellHasFigure = isFigureOn(targetI, targetJ)
+
         for (let i = 0; i < 7; i++) {
-            if (
-                this.coordinateI === targetI ||
-                this.coordinateJ === targetJ ||
-                (this.coordinateI - i === targetI && this.coordinateJ - i === targetJ) ||
-                (this.coordinateI + i === targetI && this.coordinateJ + i === targetJ) ||
-                (this.coordinateI + i === targetI && this.coordinateJ - i === targetJ) ||
-                (this.coordinateI - i === targetI && this.coordinateJ + i === targetJ)
-            ) {
+            if (this.coordinateI === targetI) {
+                if (targetJ > this.coordinateJ) {
+                    for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
+                        if (isFigureOn(this.coordinateI, j)) {
+                            return false
+                        }
+                    }
+                } else {
+                    for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
+                        if (isFigureOn(this.coordinateI, j)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
+
+                return true
+            }
+            if (this.coordinateJ === targetJ) {
+                if (targetI > this.coordinateI) {
+                    for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
+                        if (isFigureOn(i, this.coordinateJ)) {
+                            return false
+                        }
+                    }
+                } else {
+                    for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
+                        if (isFigureOn(i, this.coordinateJ)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
+                return true
+            }
+            if (this.coordinateI - i === targetI && this.coordinateJ - i === targetJ) {
+                for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
+                    for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
+                        if (isFigureOn(i, j)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
+                return true
+            }
+            if (this.coordinateI + i === targetI && this.coordinateJ + i === targetJ) {
+                for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
+                    for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
+                        if (isFigureOn(i, j)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
+                return true
+            }
+            if (this.coordinateI + i === targetI && this.coordinateJ - i === targetJ) {
+                for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
+                    for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
+                        if (isFigureOn(i, j)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
+                return true
+            }
+            if (this.coordinateI - i === targetI && this.coordinateJ + i === targetJ) {
+                for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
+                    for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
+                        if (isFigureOn(i, j)) {
+                            return false
+                        }
+                    }
+                }
+                if (cellHasFigure) {
+                    const figure = getFigure(targetI, targetJ)
+                    if (figure.color === this.color) {
+                        return false
+                    }
+                    return true
+                }
                 return true
             }
         }

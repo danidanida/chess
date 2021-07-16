@@ -6,7 +6,7 @@ import { Rook } from "./Rook"
 import { Knight } from "./Knight"
 import { IFigure } from "./Figure"
 
-/*export const figures = [
+export const figures = [
     new Pawn(true, 6, 0),
     new Pawn(true, 6, 1),
     new Pawn(true, 6, 2),
@@ -48,20 +48,30 @@ import { IFigure } from "./Figure"
 
     new Bishop(false, 0, 2),
     new Bishop(false, 0, 5),
-] */
+] 
 
 // for debugging
- export const figures = [
-    new Bishop(false, 3,3),
-    new Pawn(false, 6,6),
-    new Pawn(false, 1,5),
-    new Pawn(false, 1,1),
-    new Pawn(true, 0, 0),
-   new Pawn(true, 7, 7),
-    new Pawn(true, 6,0),
-    new Pawn(false, 5,1),
-   new Pawn(true, 0,6),
-]  
+/*export const figures = [
+    new King(true, 3, 3),
+
+   // new Pawn(false, 6, 6),
+   // new Pawn(false, 1, 5),
+   // new Pawn(false, 1, 1),
+  //  new Pawn(true, 0, 0),
+   // new Pawn(true, 7, 7),
+   // new Pawn(true, 6, 0),
+   // new Pawn(false, 5, 1),
+  //  new Pawn(true, 0, 6),
+
+    new Pawn(true, 4, 2),
+    new Pawn(true, 2, 1),
+   // new Pawn(false, 1, 3),
+   // new Pawn(false, 6, 3),
+    //new Pawn(true, 3, 0),
+   // new Pawn(true, 3, 7),
+   // new Pawn(false, 3, 1),
+   // new Pawn(false, 3, 6),
+]*/
 
 export const isFigureOn = (i: number, j: number): boolean => {
     return figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0

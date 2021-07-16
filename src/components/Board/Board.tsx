@@ -11,6 +11,7 @@ const Board = () => {
     })
 
     const [turn, setTurn] = useState<boolean>(true)
+    const [checkMate, setCheckMate] = useState<boolean>(false)
 
     const deadWhiteFiguresAmount = getDeadWhiteFiguresAmount()
     const deadBlackFiguresAmount = getDeadBlackFiguresAmount()
@@ -43,7 +44,9 @@ const Board = () => {
             } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j)) {
                 if (isFigureOn(i, j)) {
                     const deadFigure = getFigure(i, j)
-                    deadFigure.die()
+                    if (deadFigure.type === "king") {setCheckMate(true)} 
+                    else
+                    {deadFigure.die()}
                 }
                 selectedFigure.move(i, j)
                 setTurn(true)
@@ -92,7 +95,8 @@ const Board = () => {
         <div className="chessboard">
             {/*<h1 className="chessboard_title"> Chess</h1>*/}
             <h3 className="chessboard_announcement" style={turn ? { color: "white" } : { color: "black" }}>
-                {turn ? "White turn" : "Black turn"}
+                {!checkMate && turn ? "White turn" : "Black turn"}
+                {checkMate && "Game is over"}
             </h3>
             <h3>Killed white figures {deadWhiteFiguresAmount} and killed black figures {deadBlackFiguresAmount}</h3>
             <table>
