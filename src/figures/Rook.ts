@@ -14,9 +14,7 @@ export class Rook implements IFigure {
     type: string
 
     canMove(targetI: number, targetJ: number): boolean | undefined {
-        if (targetI === 3 && targetJ === 5) {
-            console.log("pu")
-        }
+
         const cellHasFigure = isFigureOn(targetI, targetJ)
 
         if (this.coordinateI === targetI) {
