@@ -20,6 +20,19 @@ export class Rook implements IFigure {
         const cellHasFigure = isFigureOn(targetI, targetJ)
 
         if (this.coordinateI === targetI) {
+            if (targetJ > this.coordinateJ) {
+                for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
+                    if (isFigureOn(this.coordinateI, j)) {
+                        return false
+                    }
+                }
+            } else {
+                for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
+                    if (isFigureOn(this.coordinateI, j)) {
+                        return false
+                    }
+                }
+            }
             if (cellHasFigure) {
                 const figure = getFigure(targetI, targetJ)
                 if (figure.color === this.color) {
@@ -28,20 +41,29 @@ export class Rook implements IFigure {
                 return true
             }
 
-            for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
-                if (isFigureOn(this.coordinateI, j)) {
-                    return false
-                }
-            }
             return true
         }
 
         if (this.coordinateJ === targetJ) {
+            if (targetI > this.coordinateI) {
+                for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
+                    if (isFigureOn(i, this.coordinateJ)) {
+                        return false
+                    }
+                }
+            } else {
+                for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
+                    if (isFigureOn(i, this.coordinateJ)) {
+                        return false
+                    }
+                }
+            }
             if (cellHasFigure) {
                 const figure = getFigure(targetI, targetJ)
                 if (figure.color === this.color) {
                     return false
                 }
+                return true
             }
             return true
         }
