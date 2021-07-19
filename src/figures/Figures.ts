@@ -52,7 +52,7 @@ export const figures = [
 
 // for debugging
 /*export const figures = [
-    new King(true, 3, 3),
+    new Rook(true, 3, 3),
 
    // new Pawn(false, 6, 6),
    // new Pawn(false, 1, 5),
@@ -63,12 +63,12 @@ export const figures = [
    // new Pawn(false, 5, 1),
   //  new Pawn(true, 0, 6),
 
-    new Pawn(true, 4, 2),
-    new Pawn(true, 2, 1),
-   // new Pawn(false, 1, 3),
-   // new Pawn(false, 6, 3),
-    //new Pawn(true, 3, 0),
-   // new Pawn(true, 3, 7),
+    //new Pawn(false, 3, 3),
+    new Pawn(true, 7, 7),
+    new Pawn(false, 0, 3),
+    new Pawn(true, 6, 0),
+    new Pawn(true, 0, 6),
+    new Pawn(true, 7, 4),
    // new Pawn(false, 3, 1),
    // new Pawn(false, 3, 6),
 ]*/

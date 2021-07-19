@@ -14,79 +14,53 @@ export class Bishop implements IFigure {
     type: string
 
     canMove(targetI: number, targetJ: number): boolean | undefined {
-        for (let i = 0; i < 7; i++) {
-            const cellHasFigure = isFigureOn(targetI, targetJ)
-
-            if (this.coordinateI - i === targetI && this.coordinateJ + i === targetJ) {
-                for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
-                    for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
-                        if (isFigureOn(i, j)) {
-                            return false
-                        }
-                    }
-                }
-                if (cellHasFigure) {
-                    const figure = getFigure(targetI, targetJ)
-                    if (figure.color === this.color) {
-                        return false
-                    }
-                    return true
-                }
-                return true
-            }
-
-            if (this.coordinateI + i === targetI && this.coordinateJ - i === targetJ) {
-                for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
-                    for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
-                        if (isFigureOn(i, j)) {
-                            return false
-                        }
-                    }
-                }
-                if (cellHasFigure) {
-                    const figure = getFigure(targetI, targetJ)
-                    if (figure.color === this.color) {
-                        return false
-                    }
-                    return true
-                }
-                return true
-            }
-            if (this.coordinateI + i === targetI && this.coordinateJ + i === targetJ) {
-                for (let j = this.coordinateJ + 1; j <= targetJ - 1; j++) {
-                    for (let i = this.coordinateI + 1; i <= targetI - 1; i++) {
-                        if (isFigureOn(i, j)) {
-                            return false
-                        }
-                    }
-                }
-                if (cellHasFigure) {
-                    const figure = getFigure(targetI, targetJ)
-                    if (figure.color === this.color) {
-                        return false
-                    }
-                    return true
-                }
-                return true
-            }
-            if (this.coordinateI - i === targetI && this.coordinateJ - i === targetJ) {
-                for (let j = this.coordinateJ - 1; j >= targetJ + 1; j--) {
-                    for (let i = this.coordinateI - 1; i >= targetI + 1; i--) {
-                        if (isFigureOn(i, j)) {
-                            return false
-                        }
-                    }
-                }
-                if (cellHasFigure) {
-                    const figure = getFigure(targetI, targetJ)
-                    if (figure.color === this.color) {
-                        return false
-                    }
-                    return true
-                }
-                return true
-            }
+        // is on same diagonal
+        const figure = getFigure(targetI, targetJ)
+        const diffI = targetI - this.coordinateI
+        const diffJ = targetJ - this.coordinateJ
+        if (Math.abs(diffI) !== Math.abs(diffJ)) {
+            return false
         }
+        if (figure && figure.color === this.color) {
+            return false
+        }
+
+        if (diffI > 0 && diffJ > 0) {
+            for (let c = 1; c < diffI; c++) {
+                if (isFigureOn(this.coordinateI + c, this.coordinateJ + c)) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        if (diffI < 0 && diffJ > 0) {
+            for (let c = 1; c < targetI; c++) {
+                if (isFigureOn(this.coordinateI - c, this.coordinateJ + c)) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        if (diffI < 0 && diffJ < 0) {
+            for (let c = 1; c < targetI; c++) {
+                if (isFigureOn(this.coordinateI - c, this.coordinateJ - c)) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        if (diffI > 0 && diffJ < 0) {
+            for (let c = 1; c < targetI; c++) {
+                if (isFigureOn(this.coordinateI + c, this.coordinateJ - c)) {
+                    return false
+                }
+            }
+            return true
+        }
+        return false
     }
 
     move(targetI: number, targetJ: number): void {
