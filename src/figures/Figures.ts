@@ -48,7 +48,7 @@ export const figures = [
 
     new Bishop(false, 0, 2),
     new Bishop(false, 0, 5),
-] 
+]
 
 // for debugging
 /*export const figures = [

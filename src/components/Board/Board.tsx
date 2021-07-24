@@ -1,8 +1,17 @@
 import "./Board.css"
 import { useState } from "react"
 import Cell from "../Cell/Cell"
-import { figures, isFigureOn, getFigure, getDeadWhiteFiguresAmount, getDeadBlackFiguresAmount } from "../../figures/Figures"
+import {
+    figures,
+    isFigureOn,
+    getFigure,
+    getDeadWhiteFiguresAmount,
+    getDeadBlackFiguresAmount,
+} from "../../figures/Figures"
 import { IFigure } from "../../figures/Figure"
+function handleNewGameClick() {
+    window.location.reload()
+}
 
 const Board = () => {
     const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
@@ -33,20 +42,21 @@ const Board = () => {
             }
         } else {
             const selectedFigure = getSelectedFigure()
-            if (turn && selectedFigure.color && selectedFigure.canMove(i, j)) {
+            // white turn
+            if (turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j)) {
                 if (isFigureOn(i, j)) {
-                    const targetFigure = getFigure(i, j)
-                    !targetFigure.color ? targetFigure.die() : stayAtPosition()
+                    const deadFigure = getFigure(i, j)
+                    !deadFigure.color ? deadFigure.die() : stayAtPosition()
+                    deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
                 selectedFigure.move(i, j)
                 setTurn(false)
                 deselect()
+                // blackturn
             } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j)) {
                 if (isFigureOn(i, j)) {
                     const deadFigure = getFigure(i, j)
-                    if (deadFigure.type === "king") {setCheckMate(true)} 
-                    else
-                    {deadFigure.die()}
+                    deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
                 selectedFigure.move(i, j)
                 setTurn(true)
@@ -83,6 +93,7 @@ const Board = () => {
                             moveSuggestion={isSuggestion}
                             i={i}
                             j={j}
+                            gameIsOver={checkMate}
                         />
                     </th>
                 )
@@ -93,12 +104,15 @@ const Board = () => {
     }
     return (
         <div className="chessboard">
+            <button onClick={handleNewGameClick}>New Game</button>
             {/*<h1 className="chessboard_title"> Chess</h1>*/}
             <h3 className="chessboard_announcement" style={turn ? { color: "white" } : { color: "black" }}>
-                {!checkMate && turn ? "White turn" : "Black turn"}
+                {!checkMate && (turn ? "White turn" : "Black turn")}
                 {checkMate && "Game is over"}
             </h3>
-            <h3>Killed white figures {deadWhiteFiguresAmount} and killed black figures {deadBlackFiguresAmount}</h3>
+            <h3>
+                Killed white figures {deadWhiteFiguresAmount} and killed black figures {deadBlackFiguresAmount}
+            </h3>
             <table>
                 <thead></thead>
                 <tbody>{drawChessBoard()}</tbody>

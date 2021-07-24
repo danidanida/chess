@@ -1,10 +1,10 @@
 import "./Cell.css"
 import React from "react"
 
-const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion }) => {
+const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion, gameIsOver }) => {
     function handleChange(e: any): void {
         e.preventDefault()
-        handleClick(i, j)
+        if (!gameIsOver) {handleClick(i, j)}
     }
 
     function capitilizeFirstLetter(string: string): string {
@@ -48,6 +48,7 @@ interface Props {
     selected: boolean
     figure: Figure
     moveSuggestion: boolean | undefined
+    gameIsOver: boolean
 }
 
 export default Cell

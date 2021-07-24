@@ -7,11 +7,13 @@ export class Rook implements IFigure {
         this.coordinateI = coordinateI
         this.coordinateJ = coordinateJ
         this.type = "rook"
+        this.didMove = false
     }
     color: boolean
     coordinateI: number
     coordinateJ: number
     type: string
+    didMove: boolean
 
     canMove(targetI: number, targetJ: number): boolean | undefined {
         const figure = getFigure(targetI, targetJ)
@@ -63,6 +65,7 @@ export class Rook implements IFigure {
     move(targetI: number, targetJ: number): void {
         this.coordinateI = targetI
         this.coordinateJ = targetJ
+        this.didMove = true
     }
 
     die() {

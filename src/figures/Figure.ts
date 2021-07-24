@@ -3,6 +3,7 @@ export interface IFigure {
     coordinateI: number
     coordinateJ: number
     type: string
+    didMove?:boolean
 
     canMove(targetI: number, targetJ: number): boolean | undefined
 

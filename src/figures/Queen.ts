@@ -31,7 +31,7 @@ export class Queen implements IFigure {
             }
 
             if (diffI === 0 && diffJ < 0) {
-                for (let c = 1; c < diffJ; c++) {
+                for (let c = 1; c < Math.abs(diffJ); c++) {
                     if (isFigureOn(this.coordinateI, this.coordinateJ - c)) {
                         return false
                     }
@@ -49,7 +49,7 @@ export class Queen implements IFigure {
             }
 
             if (diffI < 0 && diffJ === 0) {
-                for (let c = 1; c < diffI; c++) {
+                for (let c = 1; c < Math.abs(diffI); c++) {
                     if (isFigureOn(this.coordinateI - c, this.coordinateJ)) {
                         return false
                     }
@@ -72,7 +72,7 @@ export class Queen implements IFigure {
         }
 
         if (diffI < 0 && diffJ > 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < diffJ; c++) {
                 if (isFigureOn(this.coordinateI - c, this.coordinateJ + c)) {
                     return false
                 }
@@ -81,7 +81,7 @@ export class Queen implements IFigure {
         }
 
         if (diffI < 0 && diffJ < 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < Math.abs(diffJ); c++) {
                 if (isFigureOn(this.coordinateI - c, this.coordinateJ - c)) {
                     return false
                 }
@@ -90,7 +90,7 @@ export class Queen implements IFigure {
         }
 
         if (diffI > 0 && diffJ < 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < diffI; c++) {
                 if (isFigureOn(this.coordinateI + c, this.coordinateJ - c)) {
                     return false
                 }

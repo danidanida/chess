@@ -35,7 +35,7 @@ export class Bishop implements IFigure {
         }
 
         if (diffI < 0 && diffJ > 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < diffJ; c++) {
                 if (isFigureOn(this.coordinateI - c, this.coordinateJ + c)) {
                     return false
                 }
@@ -44,7 +44,7 @@ export class Bishop implements IFigure {
         }
 
         if (diffI < 0 && diffJ < 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < Math.abs(diffI); c++) {
                 if (isFigureOn(this.coordinateI - c, this.coordinateJ - c)) {
                     return false
                 }
@@ -53,7 +53,7 @@ export class Bishop implements IFigure {
         }
 
         if (diffI > 0 && diffJ < 0) {
-            for (let c = 1; c < targetI; c++) {
+            for (let c = 1; c < diffI; c++) {
                 if (isFigureOn(this.coordinateI + c, this.coordinateJ - c)) {
                     return false
                 }
