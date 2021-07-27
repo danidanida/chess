@@ -1,4 +1,6 @@
 import { IFigure } from "./Figure"
+//import { figures } from "./Figures"
+//import { Queen } from "./Queen"
 import { isFigureOn, getFigure } from "./Figures"
 
 export class Pawn implements IFigure {
@@ -7,11 +9,13 @@ export class Pawn implements IFigure {
         this.coordinateI = coordinateI
         this.coordinateJ = coordinateJ
         this.type = "pawn"
+        this.promotion = false
     }
     color: boolean
     coordinateI: number
     coordinateJ: number
     type: string
+    promotion: boolean
 
     canMove(targetI: number, targetJ: number): boolean | undefined {
         const cellHasFigure = isFigureOn(targetI, targetJ)
@@ -23,6 +27,10 @@ export class Pawn implements IFigure {
         }
         if (this.color) {
             // white pawn logic
+            if (this.coordinateI === 1 && !isFigureOn(0, this.coordinateJ - 1)) {
+                // promotion
+                this.promotion = true
+            }
             const figure = getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI - 1 === targetI && this.coordinateJ === targetJ + 1) ||
@@ -36,6 +44,10 @@ export class Pawn implements IFigure {
             }
         } else {
             // black pawn logic
+            if (this.coordinateI === 6 && !isFigureOn(7, this.coordinateJ + 1)) {
+                //promotion
+                this.promotion = true
+            }
             const figure = getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI + 1 === targetI && this.coordinateJ === targetJ + 1) ||

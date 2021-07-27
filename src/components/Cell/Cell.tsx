@@ -4,7 +4,9 @@ import React from "react"
 const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion, gameIsOver }) => {
     function handleChange(e: any): void {
         e.preventDefault()
-        if (!gameIsOver) {handleClick(i, j)}
+        if (!gameIsOver) {
+            handleClick(i, j)
+        }
     }
 
     function capitilizeFirstLetter(string: string): string {
@@ -22,13 +24,14 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
                     : undefined
             }
             className={color ? "cell cell_white" : "cell cell_black"}
-            // for debugging purpose 
-        >   {/*<span style={{color:"blue"}}>i:{i} j:{j}</span>*/} 
+            // for debugging purpose
+        >
+            {" "}
+            {/*<span style={{color:"blue"}}>i:{i} j:{j}</span>*/}
             {figure && (
                 <p className="figure_name" style={figure.color ? { color: "white" } : { color: "black" }}>
-                    {capitilizeFirstLetter(figure.type)} 
+                    {capitilizeFirstLetter(figure.type)}
                 </p>
-                
             )}
         </div>
     )

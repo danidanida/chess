@@ -32,9 +32,9 @@ export const figures = [
     new Knight(true, 7, 6),
 
     new Rook(true, 7, 0),
-    new Rook(true, 7, 7),
+    // new Rook(true, 7, 7),
 
-    new Rook(false, 0, 0),
+    //  new Rook(false, 0, 0),
     new Rook(false, 0, 7),
 
     new Queen(true, 7, 3),
@@ -87,4 +87,30 @@ export const getDeadWhiteFiguresAmount = () => {
 
 export const getDeadBlackFiguresAmount = () => {
     return figures.filter((f) => !f.color && f.coordinateI === -1 && f.coordinateJ === -1).length
+}
+
+export const promoteFigure = (type: string) => {
+    const pawn = figures
+        .filter((f) => f.type === "pawn")
+        .map((f) => f as Pawn)
+        .find((f) => f.promotion)
+    if (pawn) {
+        switch (type) {
+            case "bishop":
+                figures.push(new Bishop(pawn.color, pawn.coordinateI, pawn.coordinateJ))
+                break
+            case "queen":
+                figures.push(new Queen(pawn.color, pawn.coordinateI, pawn.coordinateJ))
+                break
+            case "knight":
+                figures.push(new Knight(pawn.color, pawn.coordinateI, pawn.coordinateJ))
+                break
+            case "rook":
+                figures.push(new Rook(pawn.color, pawn.coordinateI, pawn.coordinateJ))
+                break
+        }
+
+        pawn.move(-2, -2)
+        pawn.promotion = false
+    }
 }

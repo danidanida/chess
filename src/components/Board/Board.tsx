@@ -7,11 +7,9 @@ import {
     getFigure,
     getDeadWhiteFiguresAmount,
     getDeadBlackFiguresAmount,
+    promoteFigure,
 } from "../../figures/Figures"
 import { IFigure } from "../../figures/Figure"
-function handleNewGameClick() {
-    window.location.reload()
-}
 
 const Board = () => {
     const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
@@ -20,8 +18,12 @@ const Board = () => {
     })
 
     const [turn, setTurn] = useState<boolean>(true)
+    const [isPromotionMode, setPromotionMode] = useState<boolean>(false)
     const [checkMate, setCheckMate] = useState<boolean>(false)
 
+    function handleNewGameClick() {
+        window.location.reload()
+    }
     const deadWhiteFiguresAmount = getDeadWhiteFiguresAmount()
     const deadBlackFiguresAmount = getDeadBlackFiguresAmount()
 
@@ -34,14 +36,27 @@ const Board = () => {
     const deselect = (): void => setSelectedCoordinates({ i: undefined, j: undefined })
     const stayAtPosition = (): void => setSelectedCoordinates({ i: selectedCoordinates.i, j: selectedCoordinates.j })
 
+    const handleSelectChange = (event: any) => {
+        setPromotionMode(false)
+        promoteFigure(event.currentTarget.value)
+    }
+
     const handleClick = (i: number, j: number): void => {
+        if (isPromotionMode) {
+            return
+        }
+
         const current = { i, j }
         if (!areCoordinatesSelected()) {
-            if (isFigureOn(i, j)) {
+            // if nothingis chosen
+            const selectedFigure = getFigure(i, j)
+            if (selectedFigure && selectedFigure.color === turn) {
                 setSelectedCoordinates({ i: i, j: j })
             }
         } else {
+            // if smth is chosen
             const selectedFigure = getSelectedFigure()
+
             // white turn
             if (turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j)) {
                 if (isFigureOn(i, j)) {
@@ -52,7 +67,7 @@ const Board = () => {
                 selectedFigure.move(i, j)
                 setTurn(false)
                 deselect()
-                // blackturn
+                // black turn
             } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j)) {
                 if (isFigureOn(i, j)) {
                     const deadFigure = getFigure(i, j)
@@ -63,6 +78,10 @@ const Board = () => {
                 deselect()
             } else {
                 deselect()
+            }
+
+            if (selectedFigure.type === "pawn" && selectedFigure.promotion) {
+                setPromotionMode(true)
             }
         }
         if (selectedCoordinates.i === current.i && selectedCoordinates.j === current.j) {
@@ -105,7 +124,17 @@ const Board = () => {
     return (
         <div className="chessboard">
             <button onClick={handleNewGameClick}>New Game</button>
-            {/*<h1 className="chessboard_title"> Chess</h1>*/}
+            {isPromotionMode && (
+                <div className="chess_promotion">
+                    <select onChange={handleSelectChange} aria-label="Default select example">
+                        <option selected>Choose a figure</option>
+                        <option value="queen">Queen</option>
+                        <option value="bishop">Bishop</option>
+                        <option value="rook">Rook</option>
+                        <option value="knight">Knight</option>
+                    </select>
+                </div>
+            )}
             <h3 className="chessboard_announcement" style={turn ? { color: "white" } : { color: "black" }}>
                 {!checkMate && (turn ? "White turn" : "Black turn")}
                 {checkMate && "Game is over"}
