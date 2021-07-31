@@ -1,7 +1,29 @@
 import "./Cell.css"
 import React from "react"
+import bK from "../../images/bK.png"
+import wK from "../../images/wK.png"
+import wQ from "../../images/wQ.png"
+import bQ from "../../images/bQ.png"
+import wB from "../../images/wB.png"
+import bB from "../../images/bB.png"
+import wR from "../../images/wR.png"
+import bR from "../../images/bR.png"
+import wP from "../../images/wP.png"
+import bP from "../../images/bP.png"
+import wN from "../../images/wN.png"
+import bN from "../../images/bN.png"
 
-const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, moveSuggestion, gameIsOver }) => {
+const Cell: React.FC<Props> = ({
+    color,
+    i,
+    j,
+    handleClick,
+    selected,
+    figure,
+    moveSuggestion,
+    gameIsOver,
+    highlighted,
+}) => {
     function handleChange(e: any): void {
         e.preventDefault()
         if (!gameIsOver) {
@@ -9,8 +31,21 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
         }
     }
 
-    function capitilizeFirstLetter(string: string): string {
-        return string.charAt(0).toUpperCase() + string.slice(1)
+    function getFigureImage(type: string, color: boolean) {
+        switch (type) {
+            case "king":
+                return color ? wK : bK
+            case "queen":
+                return color ? wQ : bQ
+            case "bishop":
+                return color ? wB : bB
+            case "rook":
+                return color ? wR : bR
+            case "pawn":
+                return color ? wP : bP
+            case "knight":
+                return color ? wN : bN
+        }
     }
 
     return (
@@ -19,20 +54,16 @@ const Cell: React.FC<Props> = ({ color, i, j, handleClick, selected, figure, mov
             style={
                 selected
                     ? { backgroundColor: "rgba(246, 244, 186, 0.5)" }
-                    : moveSuggestion
-                    ? { border: "2.5px dashed red" }
+                    : figure && highlighted
+                    ? { backgroundColor: "rgba(243, 1, 1, 0.5)" }
                     : undefined
             }
             className={color ? "cell cell_white" : "cell cell_black"}
-            // for debugging purpose
         >
-            {" "}
-            {/*<span style={{color:"blue"}}>i:{i} j:{j}</span>*/}
             {figure && (
-                <p className="figure_name" style={figure.color ? { color: "white" } : { color: "black" }}>
-                    {capitilizeFirstLetter(figure.type)}
-                </p>
+                <img className="chess_figure_image" src={getFigureImage(figure.type, figure.color)} alt={figure.type}></img>
             )}
+            {moveSuggestion && <div className="chess_move_suggestion"></div>}
         </div>
     )
 }
@@ -52,6 +83,7 @@ interface Props {
     figure: Figure
     moveSuggestion: boolean | undefined
     gameIsOver: boolean
+    highlighted: boolean
 }
 
 export default Cell

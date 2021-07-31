@@ -1,5 +1,9 @@
 import { IFigure } from "./Figure"
-import { isFigureOn, getFigure } from "./Figures"
+import {
+    isFigureOn,
+    getFigure,
+    checkIfCellIsUnderAttack
+} from "./Figures"
 
 export class King implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -23,6 +27,9 @@ export class King implements IFigure {
             if (figure.color === this.color) {
                 return false
             }
+        }
+        if (checkIfCellIsUnderAttack(this.color, targetI, targetJ) ) {
+            return false
         }
         // castling
         if (this.didMove === false) {

@@ -32,9 +32,9 @@ export const figures = [
     new Knight(true, 7, 6),
 
     new Rook(true, 7, 0),
-    // new Rook(true, 7, 7),
+    new Rook(true, 7, 7),
 
-    //  new Rook(false, 0, 0),
+    new Rook(false, 0, 0),
     new Rook(false, 0, 7),
 
     new Queen(true, 7, 3),
@@ -112,5 +112,23 @@ export const promoteFigure = (type: string) => {
 
         pawn.move(-2, -2)
         pawn.promotion = false
+    }
+}
+
+export function checkIfCellIsUnderAttack(color: boolean, i: number, j: number) {
+    return figures.some((f) => f.type !== "king" && f.color !== color && f.canMove(i, j))
+}
+
+export function checkIfBlackKingUnderAttack() {
+    const blackKing = figures.filter((f) => f.type === "king" && !f.color)[0]
+    if (figures.some((f) => f.color && f.canMove(blackKing.coordinateI, blackKing.coordinateJ))) {
+        return true
+    }
+}
+
+export function checkIfWhiteKingUnderAttack() {
+    const whiteKing = figures.filter((f) => f.type === "king" && f.color)[0]
+    if (figures.some((f) => !f.color && f.canMove(whiteKing.coordinateI, whiteKing.coordinateJ))) {
+        return true
     }
 }

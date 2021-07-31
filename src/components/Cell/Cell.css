@@ -1,6 +1,12 @@
 .cell {
     width: 60px;
     height: 60px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .cell_white {
@@ -11,7 +17,14 @@
     background-color: #914a0a;
 }
 
-.figure_name {
-    margin: 0px;
-    padding: 0px;
+.chess_figure_image {
+    width: 55px;
+    height: 55px;
+}
+
+.chess_move_suggestion {
+    width: 10px;
+    height: 10px;
+    background: green;
+    border-radius: 50%;
 }
