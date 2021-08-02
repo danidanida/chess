@@ -1,5 +1,5 @@
 import { IFigure } from "./Figure"
-import { isFigureOn, getFigure } from "./Figures"
+import { ChessBoard} from "./Chessboard"
 
 export class Bishop implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -13,9 +13,9 @@ export class Bishop implements IFigure {
     coordinateJ: number
     type: string
 
-    canMove(targetI: number, targetJ: number): boolean | undefined {
+    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
         // is on same diagonal
-        const figure = getFigure(targetI, targetJ)
+        const figure = chessboard.getFigure(targetI, targetJ)
         const diffI = targetI - this.coordinateI
         const diffJ = targetJ - this.coordinateJ
         if (Math.abs(diffI) !== Math.abs(diffJ)) {
@@ -27,7 +27,7 @@ export class Bishop implements IFigure {
 
         if (diffI > 0 && diffJ > 0) {
             for (let c = 1; c < diffI; c++) {
-                if (isFigureOn(this.coordinateI + c, this.coordinateJ + c)) {
+                if (chessboard.isFigureOn(this.coordinateI + c, this.coordinateJ + c)) {
                     return false
                 }
             }
@@ -36,7 +36,7 @@ export class Bishop implements IFigure {
 
         if (diffI < 0 && diffJ > 0) {
             for (let c = 1; c < diffJ; c++) {
-                if (isFigureOn(this.coordinateI - c, this.coordinateJ + c)) {
+                if (chessboard.isFigureOn(this.coordinateI - c, this.coordinateJ + c)) {
                     return false
                 }
             }
@@ -45,7 +45,7 @@ export class Bishop implements IFigure {
 
         if (diffI < 0 && diffJ < 0) {
             for (let c = 1; c < Math.abs(diffI); c++) {
-                if (isFigureOn(this.coordinateI - c, this.coordinateJ - c)) {
+                if (chessboard.isFigureOn(this.coordinateI - c, this.coordinateJ - c)) {
                     return false
                 }
             }
@@ -54,7 +54,7 @@ export class Bishop implements IFigure {
 
         if (diffI > 0 && diffJ < 0) {
             for (let c = 1; c < diffI; c++) {
-                if (isFigureOn(this.coordinateI + c, this.coordinateJ - c)) {
+                if (chessboard.isFigureOn(this.coordinateI + c, this.coordinateJ - c)) {
                     return false
                 }
             }

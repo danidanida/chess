@@ -1,7 +1,5 @@
+import { ChessBoard} from "./Chessboard"
 import { IFigure } from "./Figure"
-//import { figures } from "./Figures"
-//import { Queen } from "./Queen"
-import { isFigureOn, getFigure } from "./Figures"
 
 export class Pawn implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -17,21 +15,21 @@ export class Pawn implements IFigure {
     type: string
     promotion: boolean
 
-    canMove(targetI: number, targetJ: number): boolean | undefined {
-        const cellHasFigure = isFigureOn(targetI, targetJ)
+    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
+        const cellHasFigure = chessboard.isFigureOn(targetI, targetJ)
         if (cellHasFigure) {
-            const figure = getFigure(targetI, targetJ)
+            const figure = chessboard.getFigure(targetI, targetJ)
             if (figure.color === this.color) {
                 return false
             }
         }
         if (this.color) {
             // white pawn logic
-            if (this.coordinateI === 1 && !isFigureOn(0, this.coordinateJ - 1)) {
+            if (this.coordinateI === 1 && !chessboard.isFigureOn(0, this.coordinateJ - 1)) {
                 // promotion
                 this.promotion = true
             }
-            const figure = getFigure(targetI, targetJ)
+            const figure = chessboard.getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI - 1 === targetI && this.coordinateJ === targetJ + 1) ||
                 (figure && this.coordinateI - 1 === targetI && this.coordinateJ === targetJ - 1) ||
@@ -44,11 +42,11 @@ export class Pawn implements IFigure {
             }
         } else {
             // black pawn logic
-            if (this.coordinateI === 6 && !isFigureOn(7, this.coordinateJ + 1)) {
+            if (this.coordinateI === 6 && !chessboard.isFigureOn(7, this.coordinateJ + 1)) {
                 //promotion
                 this.promotion = true
             }
-            const figure = getFigure(targetI, targetJ)
+            const figure = chessboard.getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI + 1 === targetI && this.coordinateJ === targetJ + 1) ||
                 (figure && this.coordinateI + 1 === targetI && this.coordinateJ === targetJ - 1) ||

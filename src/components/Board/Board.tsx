@@ -1,16 +1,7 @@
 import "./Board.css"
 import { useState } from "react"
 import Cell from "../Cell/Cell"
-import {
-    figures,
-    isFigureOn,
-    getFigure,
-    //getDeadWhiteFiguresAmount,
-    //getDeadBlackFiguresAmount,
-    promoteFigure,
-    checkIfBlackKingUnderAttack,
-    checkIfWhiteKingUnderAttack
-} from "../../figures/Figures"
+import { ChessBoard } from "../../figures/Chessboard"
 import { IFigure } from "../../figures/Figure"
 
 const Board = () => {
@@ -21,39 +12,39 @@ const Board = () => {
 
     const [turn, setTurn] = useState<boolean>(true)
     const [isPromotionMode, setPromotionMode] = useState<boolean>(false)
+    const [chessboard, setChessboard] = useState<ChessBoard>(() => new ChessBoard())
     //const [checkMate, setCheckMate] = useState<boolean>(false)
-    const [isKingUnderAttack, setIsKingUnderAttack] = useState<isKingUnderAttack>({mode:false, color:false})
+    const [isKingUnderAttack, setIsKingUnderAttack] = useState<isKingUnderAttack>({ mode: false, color: false })
 
     function handleNewGameClick() {
-        window.location.reload()
+        setChessboard(() => new ChessBoard())
     }
-    //const deadWhiteFiguresAmount = getDeadWhiteFiguresAmount()
-    //const deadBlackFiguresAmount = getDeadBlackFiguresAmount()
 
     const areCoordinatesSelected = (): boolean =>
         selectedCoordinates.i !== undefined && selectedCoordinates.j !== undefined
 
     const getSelectedFigure = (): IFigure =>
-        figures.filter((f) => f.coordinateI === selectedCoordinates.i && f.coordinateJ === selectedCoordinates.j)[0]
+        chessboard.getFigure(selectedCoordinates.i ?? -3, selectedCoordinates.j ?? -3)
 
     const deselect = (): void => setSelectedCoordinates({ i: undefined, j: undefined })
     const stayAtPosition = (): void => setSelectedCoordinates({ i: selectedCoordinates.i, j: selectedCoordinates.j })
 
     const handleSelectChange = (event: any) => {
         setPromotionMode(false)
-        promoteFigure(event.currentTarget.value)
+        chessboard.promoteFigure(event.currentTarget.value)
     }
-
 
     const handleCellClick = (i: number, j: number): void => {
         if (isPromotionMode) {
             return
         }
-
+        if (isKingUnderAttack.mode && chessboard.checkIfWhiteKingUnderCheckMate()) {
+            alert("check mate")
+        } // doesn't work
         const current = { i, j }
         if (!areCoordinatesSelected()) {
             // if nothingis chosen
-            const selectedFigure = getFigure(i, j)
+            const selectedFigure = chessboard.getFigure(i, j)
             if (selectedFigure && selectedFigure.color === turn) {
                 setSelectedCoordinates({ i: i, j: j })
             }
@@ -62,25 +53,29 @@ const Board = () => {
             const selectedFigure = getSelectedFigure()
 
             // white turn
-            if (turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j)) {
-                if (isFigureOn(i, j)) {
-                    const deadFigure = getFigure(i, j)
+            if (turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
+                if (chessboard.isFigureOn(i, j)) {
+                    const deadFigure = chessboard.getFigure(i, j)
                     !deadFigure.color ? deadFigure.die() : stayAtPosition()
                     //deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
-                selectedFigure.move(i, j)
-                if (checkIfBlackKingUnderAttack()) {setIsKingUnderAttack({mode:true, color:false})}
+                selectedFigure.move(i, j, chessboard)
+                if (chessboard.checkIfBlackKingUnderAttack()) {
+                    setIsKingUnderAttack({ mode: true, color: false })
+                }
                 setTurn(false)
                 deselect()
                 // black turn
-            } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j)) {
-                if (isFigureOn(i, j)) {
-                    const deadFigure = getFigure(i, j)
+            } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
+                if (chessboard.isFigureOn(i, j)) {
+                    const deadFigure = chessboard.getFigure(i, j)
                     deadFigure.color ? deadFigure.die() : stayAtPosition()
                     //deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
-                selectedFigure.move(i, j)
-                if (checkIfWhiteKingUnderAttack()) {setIsKingUnderAttack({mode:true, color:true})}
+                selectedFigure.move(i, j, chessboard)
+                if (chessboard.checkIfWhiteKingUnderAttack()) {
+                    setIsKingUnderAttack({ mode: true, color: true })
+                }
                 setTurn(true)
                 deselect()
             } else {
@@ -106,9 +101,13 @@ const Board = () => {
             for (let j = 0; j < 8; j++) {
                 const isBlack = (i + j) % 2 === 0
                 const isSelectedCell = i === selectedCoordinates.i && j === selectedCoordinates.j
-                const currentFigure = figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
-                const isSuggestion = selectedFigure && selectedFigure.canMove(i, j)
-                const highlight = isKingUnderAttack.mode && currentFigure && currentFigure.type === 'king' && currentFigure.color === isKingUnderAttack.color
+                const currentFigure = chessboard.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
+                const isSuggestion = selectedFigure && selectedFigure.canMove(i, j, chessboard)
+                const highlight =
+                    isKingUnderAttack.mode &&
+                    currentFigure &&
+                    currentFigure.type === "king" &&
+                    currentFigure.color === isKingUnderAttack.color
                 rows.push(
                     <th key={(i + j).toString()}>
                         <Cell
@@ -142,15 +141,13 @@ const Board = () => {
                     </select>
                 </div>
             )}
-            {/*<h3>{isKingUnderAttack.mode && "It's check"}</h3>*/}
-            {/*<h3>
-                Killed white figures {deadWhiteFiguresAmount} and killed black figures {deadBlackFiguresAmount}
-            </h3>*/}
             <table>
                 <thead></thead>
                 <tbody>{drawChessBoard()}</tbody>
             </table>
-            <button className="chess_reset_game_btn"onClick={handleNewGameClick}>New Game</button>
+            <button className="chess_reset_game_btn" onClick={handleNewGameClick}>
+                New Game
+            </button>
         </div>
     )
 }
@@ -158,8 +155,8 @@ const Board = () => {
 export default Board
 
 interface isKingUnderAttack {
-     mode:boolean
-     color:boolean
+    mode: boolean
+    color: boolean
 }
 
 interface Coordinates {

@@ -1,5 +1,5 @@
-import { IFigure } from "./Figure"
-import { isFigureOn, getFigure } from "./Figures"
+import { ChessBoard} from "./Chessboard"
+import { IFigure} from "./Figure"
 
 export class Knight implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -13,10 +13,10 @@ export class Knight implements IFigure {
     coordinateJ: number
     type: string
 
-    canMove(targetI: number, targetJ: number): boolean | undefined {
-        const cellHasFigure = isFigureOn(targetI, targetJ)
+    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
+        const cellHasFigure = chessboard.isFigureOn(targetI, targetJ)
         if (cellHasFigure) {
-            const figure = getFigure(targetI, targetJ)
+            const figure = chessboard.getFigure(targetI, targetJ)
             if (figure.color === this.color) {
                 return false
             }

@@ -1,5 +1,5 @@
+import { ChessBoard} from "./Chessboard"
 import { IFigure } from "./Figure"
-import { isFigureOn, getFigure } from "./Figures"
 
 export class Rook implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -15,8 +15,8 @@ export class Rook implements IFigure {
     type: string
     didMove: boolean
 
-    canMove(targetI: number, targetJ: number): boolean | undefined {
-        const figure = getFigure(targetI, targetJ)
+    canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined {
+        const figure = chessboard.getFigure(targetI, targetJ)
         const diffI = targetI - this.coordinateI
         const diffJ = targetJ - this.coordinateJ
         if (Math.abs(diffI) !== Math.abs(diffJ)) {
@@ -25,7 +25,7 @@ export class Rook implements IFigure {
             }
             if (diffI === 0 && diffJ > 0) {
                 for (let c = 1; c < diffJ; c++) {
-                    if (isFigureOn(this.coordinateI, this.coordinateJ + c)) {
+                    if (chessboard.isFigureOn(this.coordinateI, this.coordinateJ + c)) {
                         return false
                     }
                 }
@@ -33,8 +33,8 @@ export class Rook implements IFigure {
             }
 
             if (diffI === 0 && diffJ < 0) {
-                for (let c = 1; c < diffJ; c++) {
-                    if (isFigureOn(this.coordinateI, this.coordinateJ - c)) {
+                for (let c = 1; c < Math.abs(diffJ); c++) {
+                    if (chessboard.isFigureOn(this.coordinateI, this.coordinateJ - c)) {
                         return false
                     }
                 }
@@ -43,7 +43,7 @@ export class Rook implements IFigure {
 
             if (diffI > 0 && diffJ === 0) {
                 for (let c = 1; c < diffI; c++) {
-                    if (isFigureOn(this.coordinateI + c, this.coordinateJ)) {
+                    if (chessboard.isFigureOn(this.coordinateI + c, this.coordinateJ)) {
                         return false
                     }
                 }
@@ -51,8 +51,8 @@ export class Rook implements IFigure {
             }
 
             if (diffI < 0 && diffJ === 0) {
-                for (let c = 1; c < diffI; c++) {
-                    if (isFigureOn(this.coordinateI - c, this.coordinateJ)) {
+                for (let c = 1; c < Math.abs(diffI); c++) {
+                    if (chessboard.isFigureOn(this.coordinateI - c, this.coordinateJ)) {
                         return false
                     }
                 }

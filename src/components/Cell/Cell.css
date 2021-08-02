@@ -1,12 +1,15 @@
 .cell {
     width: 60px;
+    min-width: 20px;
     height: 60px;
+    min-height: 20px;
     text-align: center;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .cell_white {
@@ -27,4 +30,8 @@
     height: 10px;
     background: green;
     border-radius: 50%;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
 }
