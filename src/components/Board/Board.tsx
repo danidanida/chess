@@ -10,10 +10,9 @@ const Board = () => {
         j: undefined,
     })
 
-    const [turn, setTurn] = useState<boolean>(true)
     const [isPromotionMode, setPromotionMode] = useState<boolean>(false)
     const [chessboard, setChessboard] = useState<ChessBoard>(() => new ChessBoard())
-    //const [checkMate, setCheckMate] = useState<boolean>(false)
+    const [checkMate, setCheckMate] = useState<boolean>(false)
     const [isKingUnderAttack, setIsKingUnderAttack] = useState<isKingUnderAttack>({ mode: false, color: false })
 
     function handleNewGameClick() {
@@ -38,14 +37,14 @@ const Board = () => {
         if (isPromotionMode) {
             return
         }
-        if (isKingUnderAttack.mode && chessboard.checkIfWhiteKingUnderCheckMate()) {
-            alert("check mate")
-        } // doesn't work
+        if (checkMate) {
+            return
+        }
         const current = { i, j }
         if (!areCoordinatesSelected()) {
             // if nothingis chosen
             const selectedFigure = chessboard.getFigure(i, j)
-            if (selectedFigure && selectedFigure.color === turn) {
+            if (selectedFigure && selectedFigure.color === chessboard.turn) {
                 setSelectedCoordinates({ i: i, j: j })
             }
         } else {
@@ -53,30 +52,36 @@ const Board = () => {
             const selectedFigure = getSelectedFigure()
 
             // white turn
-            if (turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
+            if (chessboard.turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
                 if (chessboard.isFigureOn(i, j)) {
                     const deadFigure = chessboard.getFigure(i, j)
                     !deadFigure.color ? deadFigure.die() : stayAtPosition()
-                    //deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
                 selectedFigure.move(i, j, chessboard)
-                if (chessboard.checkIfBlackKingUnderAttack()) {
+                if (chessboard.checkIfKingUnderAttack(false)) {
                     setIsKingUnderAttack({ mode: true, color: false })
                 }
-                setTurn(false)
+                if (chessboard.checkIfKingUnderCheckMate(false)) {
+                    alert("check mate")
+                    setCheckMate(true)
+                }
+                chessboard.turn = false
                 deselect()
                 // black turn
-            } else if (!turn && !selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
+            } else if (!chessboard.turn && !selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
                 if (chessboard.isFigureOn(i, j)) {
                     const deadFigure = chessboard.getFigure(i, j)
                     deadFigure.color ? deadFigure.die() : stayAtPosition()
-                    //deadFigure.type === "king" ? setCheckMate(true) : deadFigure.die()
                 }
                 selectedFigure.move(i, j, chessboard)
-                if (chessboard.checkIfWhiteKingUnderAttack()) {
+                if (chessboard.checkIfKingUnderAttack(true)) {
                     setIsKingUnderAttack({ mode: true, color: true })
                 }
-                setTurn(true)
+                if (chessboard.checkIfKingUnderCheckMate(true)) {
+                    alert("check mate")
+                    setCheckMate(true)
+                }
+                chessboard.turn = true
                 deselect()
             } else {
                 deselect()
@@ -118,7 +123,6 @@ const Board = () => {
                             moveSuggestion={isSuggestion}
                             i={i}
                             j={j}
-                            gameIsOver={false}
                             highlighted={highlight}
                         />
                     </th>
@@ -131,8 +135,8 @@ const Board = () => {
     return (
         <div className="chessboard">
             {isPromotionMode && (
-                <div className="chess_promotion">
-                    <select onChange={handleSelectChange} aria-label="Default select example">
+                <div>
+                    <select className="chess_promotion" onChange={handleSelectChange}>
                         <option selected>Choose a figure</option>
                         <option value="queen">Queen</option>
                         <option value="bishop">Bishop</option>

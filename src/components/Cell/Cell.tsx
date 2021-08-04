@@ -21,14 +21,12 @@ const Cell: React.FC<Props> = ({
     selected,
     figure,
     moveSuggestion,
-    gameIsOver,
     highlighted,
 }) => {
     function handleChange(e: any): void {
         e.preventDefault()
-        if (!gameIsOver) {
             handleClick(i, j)
-        }
+        
     }
 
     function getFigureImage(type: string, color: boolean) {
@@ -82,7 +80,6 @@ interface Props {
     selected: boolean
     figure: Figure
     moveSuggestion: boolean | undefined
-    gameIsOver: boolean
     highlighted: boolean
 }
 

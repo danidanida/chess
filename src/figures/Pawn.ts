@@ -1,4 +1,4 @@
-import { ChessBoard} from "./Chessboard"
+import { ChessBoard } from "./Chessboard"
 import { IFigure } from "./Figure"
 
 export class Pawn implements IFigure {
@@ -15,17 +15,20 @@ export class Pawn implements IFigure {
     type: string
     promotion: boolean
 
-    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
+    canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined {
         const cellHasFigure = chessboard.isFigureOn(targetI, targetJ)
         if (cellHasFigure) {
             const figure = chessboard.getFigure(targetI, targetJ)
             if (figure.color === this.color) {
                 return false
             }
+            if (figure.color !== this.color && Math.abs(figure.coordinateI - this.coordinateI) === 2) {
+                return false
+            }
         }
         if (this.color) {
             // white pawn logic
-            if (this.coordinateI === 1 && !chessboard.isFigureOn(0, this.coordinateJ - 1)) {
+            if (this.coordinateI === 0) {
                 // promotion
                 this.promotion = true
             }
@@ -37,12 +40,17 @@ export class Pawn implements IFigure {
             ) {
                 return true
             }
-            if (this.coordinateI - 2 === targetI && this.coordinateJ === targetJ && this.coordinateI === 6) {
+            if (
+                !chessboard.isFigureOn(this.coordinateI - 1, this.coordinateJ) &&
+                this.coordinateI - 2 === targetI &&
+                this.coordinateJ === targetJ &&
+                this.coordinateI === 6
+            ) {
                 return true
             }
         } else {
             // black pawn logic
-            if (this.coordinateI === 6 && !chessboard.isFigureOn(7, this.coordinateJ + 1)) {
+            if (this.coordinateI === 7) {
                 //promotion
                 this.promotion = true
             }
@@ -54,7 +62,12 @@ export class Pawn implements IFigure {
             ) {
                 return true
             }
-            if (this.coordinateI + 2 === targetI && this.coordinateJ === targetJ && this.coordinateI === 1) {
+            if (
+                !chessboard.isFigureOn(this.coordinateI + 1, this.coordinateJ) &&
+                this.coordinateI + 2 === targetI &&
+                this.coordinateJ === targetJ &&
+                this.coordinateI === 1
+            ) {
                 return true
             }
         }

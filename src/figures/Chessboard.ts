@@ -50,9 +50,14 @@ export class ChessBoard {
 
             new Bishop(false, 0, 2),
             new Bishop(false, 0, 5),
+            /*new Rook(false, 6, 1),
+            new King(false, 5, 4),
+            new King(true, 7, 4),*/
         ]
+        this.turn = true
     }
     figures: Array<IFigure>
+    turn: boolean
 
     isFigureOn = (i: number, j: number): boolean => {
         return this.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0
@@ -96,36 +101,334 @@ export class ChessBoard {
         }
     }
 
-    checkIfCellIsUnderAttack(color: boolean, i: number, j: number) {
-        return this.figures.some((f) => f.type !== "king" && f.color !== color && f.canMove(i, j, this))
+    checkIfCellIsUnderAttack(side: boolean, i: number, j: number): boolean {
+        return this.figures.some((f) => f.color !== side && f.canMove(i, j, this))
     }
 
-    checkIfBlackKingUnderAttack(): boolean {
-        const blackKing = this.figures.filter((f) => f.type === "king" && !f.color)[0]
-        if (this.figures.some((f) => f.color && f.canMove(blackKing.coordinateI, blackKing.coordinateJ, this))) {
+    checkIfKingUnderAttack(side: boolean): boolean {
+        const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
+        if (king && this.checkIfCellIsUnderAttack(side, king.coordinateI, king.coordinateJ)) {
             return true
         }
         return false
     }
 
-    checkIfWhiteKingUnderAttack(): boolean {
-        const whiteKing = this.figures.filter((f) => f.type === "king" && f.color)[0]
-        if (this.figures.some((f) => !f.color && f.canMove(whiteKing.coordinateI, whiteKing.coordinateJ, this))) {
-            return true
-        }
-        return false
-    }
+    private canKingEscape(side: boolean): boolean {
+        const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
 
-    checkIfWhiteKingUnderCheckMate(): boolean {
-        const whiteKing = this.figures.filter((f) => f.type === "king" && f.color)[0]
         for (let i = 0; i < 7; i++) {
             for (let j = 0; j < 7; j++) {
-                if (whiteKing.canMove(i, j, this)) {
+                if (king.canMove(i, j, this)) {
                     if (this.figures.some((f) => !f.color && f.canMove(i, j, this))) {
                         return true
                     }
                 }
+                return false
             }
+        }
+        return false
+    }
+
+    private canAttackingFigureBeKilled(side: boolean): boolean {
+        const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
+
+        const attackerAmount = this.figures.filter(
+            (f) => f.color !== side && f.canMove(king.coordinateI, king.coordinateJ, this)
+        ).length
+
+        const attacker = this.figures.filter(
+            (f) => f.color !== side && f.canMove(king.coordinateI, king.coordinateJ, this)
+        )[0]
+
+        if (
+            attackerAmount === 1 &&
+            attacker &&
+            this.figures.some((f) => f.color === side && f.canMove(attacker.coordinateI, attacker.coordinateJ, this))
+        ) {
+            return true
+        }
+        return false
+    }
+
+    private canAnythingStandBetweenKingAndAttacker(side: boolean): boolean {
+        const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
+
+        const attackerAmount = this.figures.filter(
+            (f) => f.color !== side && f.canMove(king.coordinateI, king.coordinateJ, this)
+        ).length
+
+        if (attackerAmount > 1) {
+            return false
+        }
+
+        const attacker = this.figures.filter(
+            (f) => f.color !== side && f.canMove(king.coordinateI, king.coordinateJ, this)
+        )[0]
+
+        const diffI = attacker && attacker.coordinateI - king.coordinateI
+        const diffJ = attacker && attacker.coordinateJ - king.coordinateJ
+
+        if (attacker && attacker.type === "bishop") {
+            if (Math.abs(diffI) === Math.abs(diffJ)) {
+                if (diffI > 0 && diffJ > 0) {
+                    for (let c = 1; c < diffI; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI + c, king.coordinateJ + c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI < 0 && diffJ > 0) {
+                    for (let c = 1; c < diffJ; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI - c, king.coordinateJ + c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI < 0 && diffJ < 0) {
+                    for (let c = 1; c < Math.abs(diffI); c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI - c, king.coordinateJ - c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI > 0 && diffJ < 0) {
+                    for (let c = 1; c < diffI; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI + c, king.coordinateJ - c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+            }
+        }
+        if (attacker && attacker.type === "queen") {
+            if (Math.abs(diffI) === Math.abs(diffJ)) {
+                if (diffI > 0 && diffJ > 0) {
+                    for (let c = 1; c < diffI; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI + c, king.coordinateJ + c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI < 0 && diffJ > 0) {
+                    for (let c = 1; c < diffJ; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI - c, king.coordinateJ + c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI < 0 && diffJ < 0) {
+                    for (let c = 1; c < Math.abs(diffI); c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI - c, king.coordinateJ - c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI > 0 && diffJ < 0) {
+                    for (let c = 1; c < diffI; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI + c, king.coordinateJ - c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+            } else {
+                if (diffI === 0 && diffJ > 0) {
+                    for (let c = 1; c < diffJ; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(attacker.coordinateI, king.coordinateI + c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI === 0 && diffJ < 0) {
+                    for (let c = 1; c < Math.abs(diffJ); c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(attacker.coordinateI, king.coordinateI - c, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI > 0 && diffJ === 0) {
+                    for (let c = 1; c < diffI; c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(king.coordinateI + c, attacker.coordinateJ, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                if (diffI < 0 && diffJ === 0) {
+                    for (let c = 1; c < Math.abs(diffI); c++) {
+                        if (
+                            this.figures.some(
+                                (f) =>
+                                    f.color === side &&
+                                    f.type !== "king" &&
+                                    f.canMove(attacker.coordinateI - c, attacker.coordinateJ, this)
+                            )
+                        ) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+            }
+        }
+        if (attacker && attacker.type === "rook") {
+            if (diffI === 0 && diffJ > 0) {
+                for (let c = 1; c < diffJ; c++) {
+                    if (
+                        this.figures.some(
+                            (f) =>
+                                f.color === side &&
+                                f.type !== "king" &&
+                                f.canMove(attacker.coordinateI, king.coordinateI + c, this)
+                        )
+                    ) {
+                        return true
+                    }
+                }
+                return false
+            }
+            if (diffI === 0 && diffJ < 0) {
+                for (let c = 1; c < Math.abs(diffJ); c++) {
+                    if (
+                        this.figures.some(
+                            (f) =>
+                                f.color === side &&
+                                f.type !== "king" &&
+                                f.canMove(attacker.coordinateI, king.coordinateI - c, this)
+                        )
+                    ) {
+                        return true
+                    }
+                }
+                return false
+            }
+            if (diffI > 0 && diffJ === 0) {
+                for (let c = 1; c < diffI; c++) {
+                    if (
+                        this.figures.some(
+                            (f) =>
+                                f.color === side &&
+                                f.type !== "king" &&
+                                f.canMove(king.coordinateI + c, attacker.coordinateJ, this)
+                        )
+                    ) {
+                        return true
+                    }
+                }
+                return false
+            }
+            if (diffI < 0 && diffJ === 0) {
+                for (let c = 1; c < Math.abs(diffI); c++) {
+                    if (
+                        this.figures.some(
+                            (f) =>
+                                f.color === side &&
+                                f.type !== "king" &&
+                                f.canMove(attacker.coordinateI - c, attacker.coordinateJ, this)
+                        )
+                    ) {
+                        return true
+                    }
+                }
+                return false
+            }
+        }
+        return false
+    }
+
+    checkIfKingUnderCheckMate(side: boolean): boolean {
+        const isKingUnderAttack = this.checkIfKingUnderAttack(side)
+        const kingCantEscape = !this.canKingEscape(side)
+        const attackerCantBeKilled = !this.canAttackingFigureBeKilled(side)
+        const nothingCanStandInBetween = !this.canAnythingStandBetweenKingAndAttacker(side)
+        if (isKingUnderAttack && kingCantEscape && attackerCantBeKilled && nothingCanStandInBetween) {
+            return true
         }
         return false
     }

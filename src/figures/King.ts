@@ -24,9 +24,13 @@ export class King implements IFigure {
                 return false
             }
         }
-        if (chessboard.checkIfCellIsUnderAttack(this.color, targetI, targetJ)) {
-            return false
+
+        if(this.color === chessboard.turn) { // avoids infinite loop (canMove of king calls canMove of oposite king)
+            if (chessboard.checkIfCellIsUnderAttack(this.color, targetI, targetJ)) {
+                return false
+            }
         }
+        
         // castling
         if (this.didMove === false) {
             const rookRight = chessboard.getFigure(this.coordinateI, this.coordinateJ + 3)
@@ -44,8 +48,8 @@ export class King implements IFigure {
             }
             if (
                 rookLeft &&
-                rookRight.type === "rook" &&
-                !rookRight.didMove &&
+                rookLeft.type === "rook" &&
+                !rookLeft.didMove &&
                 !chessboard.isFigureOn(this.coordinateI, this.coordinateJ - 1) &&
                 !chessboard.isFigureOn(this.coordinateI, this.coordinateJ - 2) &&
                 !chessboard.isFigureOn(this.coordinateI, this.coordinateJ - 3) &&
