@@ -50,14 +50,15 @@ export class ChessBoard {
 
             new Bishop(false, 0, 2),
             new Bishop(false, 0, 5),
-            /*new Rook(false, 6, 1),
-            new King(false, 5, 4),
-            new King(true, 7, 4),*/
         ]
         this.turn = true
+        this.check = false
+        this.checkMate = false
     }
     figures: Array<IFigure>
     turn: boolean
+    check: boolean
+    checkMate: boolean
 
     isFigureOn = (i: number, j: number): boolean => {
         return this.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0
@@ -65,14 +66,6 @@ export class ChessBoard {
 
     getFigure = (i: number, j: number): IFigure => {
         return this.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
-    }
-
-    getDeadWhiteFiguresAmount = () => {
-        return this.figures.filter((f) => f.color && f.coordinateI === -1 && f.coordinateJ === -1).length
-    }
-
-    getDeadBlackFiguresAmount = () => {
-        return this.figures.filter((f) => !f.color && f.coordinateI === -1 && f.coordinateJ === -1).length
     }
 
     promoteFigure = (type: string) => {
@@ -108,8 +101,10 @@ export class ChessBoard {
     checkIfKingUnderAttack(side: boolean): boolean {
         const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
         if (king && this.checkIfCellIsUnderAttack(side, king.coordinateI, king.coordinateJ)) {
+            this.check = true
             return true
         }
+        this.check = false
         return false
     }
 
@@ -119,11 +114,10 @@ export class ChessBoard {
         for (let i = 0; i < 7; i++) {
             for (let j = 0; j < 7; j++) {
                 if (king.canMove(i, j, this)) {
-                    if (this.figures.some((f) => !f.color && f.canMove(i, j, this))) {
+                    if (this.figures.some((f) => f.color !== side && f.canMove(i, j, this))) {
                         return true
                     }
                 }
-                return false
             }
         }
         return false
@@ -143,7 +137,10 @@ export class ChessBoard {
         if (
             attackerAmount === 1 &&
             attacker &&
-            this.figures.some((f) => f.color === side && f.canMove(attacker.coordinateI, attacker.coordinateJ, this))
+            this.figures.some(
+                (f) =>
+                    f.color === side && f.type !== "king" && f.canMove(attacker.coordinateI, attacker.coordinateJ, this)
+            )
         ) {
             return true
         }
@@ -167,7 +164,15 @@ export class ChessBoard {
 
         const diffI = attacker && attacker.coordinateI - king.coordinateI
         const diffJ = attacker && attacker.coordinateJ - king.coordinateJ
-
+        if (attacker && attacker.type === "knight") {
+            return false
+        }
+        if (attacker && attacker.type === "pawn") {
+            return false
+        }
+        if (attacker && attacker.type === "king") {
+            return false
+        }
         if (attacker && attacker.type === "bishop") {
             if (Math.abs(diffI) === Math.abs(diffJ)) {
                 if (diffI > 0 && diffJ > 0) {
@@ -428,8 +433,10 @@ export class ChessBoard {
         const attackerCantBeKilled = !this.canAttackingFigureBeKilled(side)
         const nothingCanStandInBetween = !this.canAnythingStandBetweenKingAndAttacker(side)
         if (isKingUnderAttack && kingCantEscape && attackerCantBeKilled && nothingCanStandInBetween) {
+            this.checkMate = true
             return true
         }
+        this.checkMate = false
         return false
     }
 }

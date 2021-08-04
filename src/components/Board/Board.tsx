@@ -5,17 +5,16 @@ import { ChessBoard } from "../../figures/Chessboard"
 import { IFigure } from "../../figures/Figure"
 
 const Board = () => {
+    const [chessboard, setChessboard] = useState<ChessBoard>(() => new ChessBoard())
     const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates>({
         i: undefined,
         j: undefined,
     })
-
     const [isPromotionMode, setPromotionMode] = useState<boolean>(false)
-    const [chessboard, setChessboard] = useState<ChessBoard>(() => new ChessBoard())
-    const [checkMate, setCheckMate] = useState<boolean>(false)
     const [isKingUnderAttack, setIsKingUnderAttack] = useState<isKingUnderAttack>({ mode: false, color: false })
+    const [checkMate, setCheckMate] = useState<boolean>(false)
 
-    function handleNewGameClick() {
+    function handleStartNewGameClick() {
         setChessboard(() => new ChessBoard())
     }
 
@@ -31,6 +30,12 @@ const Board = () => {
     const handleSelectChange = (event: any) => {
         setPromotionMode(false)
         chessboard.promoteFigure(event.currentTarget.value)
+    }
+
+    const toggleTurn = () => {
+        if (chessboard.turn === true) {
+            return (chessboard.turn = false)
+        } else return (chessboard.turn = true)
     }
 
     const handleCellClick = (i: number, j: number): void => {
@@ -51,37 +56,23 @@ const Board = () => {
             // if smth is chosen
             const selectedFigure = getSelectedFigure()
 
-            // white turn
-            if (chessboard.turn && selectedFigure && selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
+            if (selectedFigure && selectedFigure.canMove(i, j, chessboard)) {
                 if (chessboard.isFigureOn(i, j)) {
-                    const deadFigure = chessboard.getFigure(i, j)
-                    !deadFigure.color ? deadFigure.die() : stayAtPosition()
+                    const targetFigure = chessboard.getFigure(i, j)
+                    if (targetFigure.color !== selectedFigure.color) {
+                        targetFigure.die()
+                    } else stayAtPosition()
                 }
                 selectedFigure.move(i, j, chessboard)
-                if (chessboard.checkIfKingUnderAttack(false)) {
-                    setIsKingUnderAttack({ mode: true, color: false })
-                }
-                if (chessboard.checkIfKingUnderCheckMate(false)) {
+                if (chessboard.checkIfKingUnderAttack(!chessboard.turn)) {
+                    setIsKingUnderAttack({ mode: true, color: !chessboard.turn })
+                } else setIsKingUnderAttack({ mode: false, color: false })
+                if (chessboard.checkIfKingUnderCheckMate(chessboard.turn)) {
                     alert("check mate")
                     setCheckMate(true)
                 }
-                chessboard.turn = false
-                deselect()
-                // black turn
-            } else if (!chessboard.turn && !selectedFigure.color && selectedFigure.canMove(i, j, chessboard)) {
-                if (chessboard.isFigureOn(i, j)) {
-                    const deadFigure = chessboard.getFigure(i, j)
-                    deadFigure.color ? deadFigure.die() : stayAtPosition()
-                }
-                selectedFigure.move(i, j, chessboard)
-                if (chessboard.checkIfKingUnderAttack(true)) {
-                    setIsKingUnderAttack({ mode: true, color: true })
-                }
-                if (chessboard.checkIfKingUnderCheckMate(true)) {
-                    alert("check mate")
-                    setCheckMate(true)
-                }
-                chessboard.turn = true
+                toggleTurn()
+                console.log(chessboard.turn)
                 deselect()
             } else {
                 deselect()
@@ -149,7 +140,7 @@ const Board = () => {
                 <thead></thead>
                 <tbody>{drawChessBoard()}</tbody>
             </table>
-            <button className="chess_reset_game_btn" onClick={handleNewGameClick}>
+            <button className="chess_reset_game_btn" onClick={handleStartNewGameClick}>
                 New Game
             </button>
         </div>
