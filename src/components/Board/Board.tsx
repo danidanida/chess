@@ -1,7 +1,7 @@
 import "./Board.css"
 import { useState } from "react"
-import Cell from "../Cell/Cell"
 import { ChessBoard } from "../../figures/Chessboard"
+import Cell from "../Cell/Cell"
 import { IFigure } from "../../figures/Figure"
 
 const Board = () => {
@@ -72,7 +72,6 @@ const Board = () => {
                     setCheckMate(true)
                 }
                 toggleTurn()
-                console.log(chessboard.turn)
                 deselect()
             } else {
                 deselect()
