@@ -8,12 +8,16 @@ export class King implements IFigure {
         this.coordinateJ = coordinateJ
         this.type = "king"
         this.didMove = false
+        this.castlingRight = false
+        this.castlingLeft = false
     }
     color: boolean
     coordinateI: number
     coordinateJ: number
     type: string
     didMove: boolean
+    castlingRight: boolean
+    castlingLeft:boolean
 
     canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
         const cellHasFigure = chessboard.isFigureOn(targetI, targetJ)
@@ -88,10 +92,14 @@ export class King implements IFigure {
         if (targetJ === this.coordinateJ + 2) {
             const rook = chessboard.getFigure(this.coordinateI, this.coordinateJ + 3)
             rook.move(this.coordinateI, this.coordinateJ + 1, chessboard)
+            rook.castling = true
+            this.castlingRight = true
         }
         if (targetJ === this.coordinateJ - 2) {
             const rook = chessboard.getFigure(this.coordinateI, this.coordinateJ - 4)
             rook.move(this.coordinateI, this.coordinateJ - 1,chessboard)
+            rook.castling = true
+            this.castlingLeft = true
         }
         this.coordinateI = targetI
         this.coordinateJ = targetJ

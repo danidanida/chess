@@ -52,13 +52,27 @@ export class ChessBoard {
             new Bishop(false, 0, 5),
         ]
         this.turn = true
+        this.selectedI = undefined
+        this.selectedJ = undefined
+        this.promotion = false
         this.check = false
         this.checkMate = false
+        this.history = []
     }
     figures: Array<IFigure>
     turn: boolean
+    selectedI: number | undefined
+    selectedJ: number | undefined
+    promotion: boolean
     check: boolean
     checkMate: boolean
+    history: Array<{
+        figure: IFigure
+        from: { i: number; j: number }
+        to: { i: number; j: number }
+        killedFigure: IFigure | null
+        killedFigureCoordinates: { i: number; j: number } | null
+    }>
 
     isFigureOn = (i: number, j: number): boolean => {
         return this.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j).length > 0
@@ -66,6 +80,19 @@ export class ChessBoard {
 
     getFigure = (i: number, j: number): IFigure => {
         return this.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
+    }
+
+    areCoordinatesSelected(): boolean {
+        return this.selectedI !== undefined && this.selectedJ !== undefined
+    }
+
+    getSelectedFigure(): IFigure {
+        return this.getFigure(this.selectedI ?? -3, this.selectedJ ?? -3)
+    }
+
+    deselect(): void {
+        this.selectedI = undefined
+        this.selectedJ = undefined
     }
 
     promoteFigure = (type: string) => {
@@ -438,5 +465,90 @@ export class ChessBoard {
         }
         this.checkMate = false
         return false
+    }
+
+    toggleTurn() {
+        if (this.turn === true) {
+            return (this.turn = false)
+        } else return (this.turn = true)
+    }
+
+    saveInHistory(figure: IFigure, i: number, j: number, killedFigure: IFigure | null) {
+        const current = { i: figure.coordinateI, j: figure.coordinateJ }
+        const killed = killedFigure && { i: killedFigure.coordinateI, j: killedFigure.coordinateJ }
+        const killedFigureCoordinates = killedFigure ? killed : null
+        this.history.push({
+            figure,
+            from: current,
+            to: { i, j },
+            killedFigure,
+            killedFigureCoordinates,
+        })
+    }
+    moveBack() {
+        const history = this.history
+
+        if (history.length === 0) {
+            return
+        }
+        const lastItem = history.length === 1 ? history[0] : history[history.length - 1]
+        history.pop()
+        const figure = lastItem.figure
+        if (lastItem.killedFigure !== null && lastItem.killedFigureCoordinates !== null) {
+            const killedFigure = lastItem.killedFigure
+            const killedFigureInitialPosition = lastItem.killedFigureCoordinates
+            killedFigure.coordinateI = killedFigureInitialPosition.i
+            killedFigure.coordinateJ = killedFigureInitialPosition.j
+        }
+        if (figure.type === "king") {
+            if (figure.castlingRight) {
+                const rook = this.figures.filter((r) => r.castling === true)[0]
+                rook.move(7, 7, this)
+                rook.didMove = false
+            }
+            if (figure.castlingLeft) {
+                const rook = this.figures.filter((r) => r.castling === true)[0]
+                rook.move(7, 0, this)
+                rook.didMove = false
+            }
+            figure.move(lastItem.from.i, lastItem.from.j, this)
+            figure.didMove = false
+            this.toggleTurn()
+        }
+        figure.move(lastItem.from.i, lastItem.from.j, this)
+        this.toggleTurn()
+    }
+
+    select(i: number, j: number) {
+        // if nothingis chosen
+        const selectedFigure = this.getFigure(i, j)
+        if (selectedFigure) {
+            if (selectedFigure.color === this.turn) {
+                this.selectedI = i
+                this.selectedJ = j
+            }
+        }
+    }
+
+    makeMove(i: number, j: number) {
+        // if smth is chosen
+        const selectedFigure = this.getSelectedFigure()
+        const targetFigure = this.getFigure(i, j)
+        if (selectedFigure) {
+            if (selectedFigure.canMove(i, j, this)) {
+                this.saveInHistory(selectedFigure, i, j, targetFigure || null)
+                if (targetFigure) {
+                    targetFigure.die()
+                }
+                selectedFigure.move(i, j, this)
+                if (selectedFigure.type === "pawn" && selectedFigure.promotion) {
+                    this.promotion = true
+                }
+                this.toggleTurn()
+                this.deselect()
+            }
+        } else {
+            this.deselect()
+        }
     }
 }

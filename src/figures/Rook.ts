@@ -8,12 +8,14 @@ export class Rook implements IFigure {
         this.coordinateJ = coordinateJ
         this.type = "rook"
         this.didMove = false
+        this.castling = false
     }
     color: boolean
     coordinateI: number
     coordinateJ: number
     type: string
     didMove: boolean
+    castling:boolean
 
     canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined {
         const figure = chessboard.getFigure(targetI, targetJ)
