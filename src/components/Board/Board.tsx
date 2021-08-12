@@ -12,8 +12,8 @@ const Board = () => {
     }
 
     const handleSelectChange = (event: any) => {
-        chessboard.promotion = false
         chessboard.promoteFigure(event.currentTarget.value)
+        setRender(render + 1)
     }
 
     const handleBack = () => {
@@ -50,15 +50,13 @@ const Board = () => {
     const drawChessBoard = () => {
         let chessBoard = []
 
-        const selectedFigure = chessboard.getSelectedFigure()
-
         for (let i = 0; i < 8; i++) {
             let rows = []
             for (let j = 0; j < 8; j++) {
                 const isBlack = (i + j) % 2 === 0
                 const isSelectedCell = i === chessboard.selectedI && j === chessboard.selectedJ
                 const currentFigure = chessboard.figures.filter((f) => f.coordinateI === i && f.coordinateJ === j)[0]
-                const isSuggestion = selectedFigure && selectedFigure.canMove(i, j, chessboard)
+                const isSuggestion = chessboard.canMove(i, j)
                 const highlight =
                     chessboard.check &&
                     currentFigure &&

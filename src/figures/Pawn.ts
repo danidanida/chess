@@ -26,12 +26,9 @@ export class Pawn implements IFigure {
                 return false
             }
         }
+
         if (this.color) {
             // white pawn logic
-            if (this.coordinateI === 0) {
-                // promotion
-                this.promotion = true
-            }
             const figure = chessboard.getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI - 1 === targetI && this.coordinateJ === targetJ + 1) ||
@@ -50,10 +47,6 @@ export class Pawn implements IFigure {
             }
         } else {
             // black pawn logic
-            if (this.coordinateI === 7) {
-                //promotion
-                this.promotion = true
-            }
             const figure = chessboard.getFigure(targetI, targetJ)
             if (
                 (figure && this.coordinateI + 1 === targetI && this.coordinateJ === targetJ + 1) ||
@@ -76,6 +69,9 @@ export class Pawn implements IFigure {
     move(targetI: number, targetJ: number): void {
         this.coordinateI = targetI
         this.coordinateJ = targetJ
+        if (this.coordinateI === 0 || this.coordinateI === 7) {
+            this.promotion = true
+        }
     }
 
     die() {

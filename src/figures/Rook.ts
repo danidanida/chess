@@ -1,5 +1,6 @@
 import { ChessBoard} from "./Chessboard"
 import { IFigure } from "./Figure"
+import { toHorizontalRight }  from './utils';
 
 export class Rook implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -26,12 +27,7 @@ export class Rook implements IFigure {
                 return false
             }
             if (diffI === 0 && diffJ > 0) {
-                for (let c = 1; c < diffJ; c++) {
-                    if (chessboard.isFigureOn(this.coordinateI, this.coordinateJ + c)) {
-                        return false
-                    }
-                }
-                return true
+               return toHorizontalRight(chessboard, diffJ, this.coordinateI, this.coordinateJ)
             }
 
             if (diffI === 0 && diffJ < 0) {

@@ -1,5 +1,6 @@
-import { ChessBoard} from "./Chessboard"
+import { ChessBoard } from "./Chessboard"
 import { IFigure } from "./Figure"
+import { toHorizontalRight } from "./utils"
 
 export class Queen implements IFigure {
     constructor(color: boolean, coordinateI: number, coordinateJ: number) {
@@ -13,7 +14,7 @@ export class Queen implements IFigure {
     coordinateJ: number
     type: string
 
-    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
+    canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined {
         const figure = chessboard.getFigure(targetI, targetJ)
         const diffI = targetI - this.coordinateI
         const diffJ = targetJ - this.coordinateJ
@@ -22,12 +23,7 @@ export class Queen implements IFigure {
                 return false
             }
             if (diffI === 0 && diffJ > 0) {
-                for (let c = 1; c < diffJ; c++) {
-                    if (chessboard.isFigureOn(this.coordinateI, this.coordinateJ + c)) {
-                        return false
-                    }
-                }
-                return true
+                return toHorizontalRight(chessboard, diffJ, this.coordinateI, this.coordinateJ)
             }
 
             if (diffI === 0 && diffJ < 0) {

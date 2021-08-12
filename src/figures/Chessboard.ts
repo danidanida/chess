@@ -31,7 +31,7 @@ export class ChessBoard {
             new Knight(false, 0, 6),
 
             new Knight(true, 7, 1),
-            new Knight(true, 7, 6),
+            //new Knight(true, 7, 6),
 
             new Rook(true, 7, 0),
             new Rook(true, 7, 7),
@@ -46,7 +46,7 @@ export class ChessBoard {
             new King(false, 0, 4),
 
             new Bishop(true, 7, 2),
-            new Bishop(true, 7, 5),
+            //new Bishop(true, 7, 5),
 
             new Bishop(false, 0, 2),
             new Bishop(false, 0, 5),
@@ -68,10 +68,12 @@ export class ChessBoard {
     checkMate: boolean
     history: Array<{
         figure: IFigure
+        figureDidMove: boolean | undefined
         from: { i: number; j: number }
         to: { i: number; j: number }
         killedFigure: IFigure | null
         killedFigureCoordinates: { i: number; j: number } | null
+        isCastling: boolean
     }>
 
     isFigureOn = (i: number, j: number): boolean => {
@@ -100,6 +102,7 @@ export class ChessBoard {
             .filter((f) => f.type === "pawn")
             .map((f) => f as Pawn)
             .find((f) => f.promotion)
+
         if (pawn) {
             switch (type) {
                 case "bishop":
@@ -118,6 +121,7 @@ export class ChessBoard {
 
             pawn.move(-2, -2)
             pawn.promotion = false
+            this.promotion = false
         }
     }
 
@@ -174,6 +178,10 @@ export class ChessBoard {
         return false
     }
 
+    private checkIfAnyFigureCanStandBetween(side: boolean, i: number, j: number): boolean {
+        return this.figures.some((f) => f.color === side && f.type !== "king" && f.canMove(i, j, this))
+    }
+
     private canAnythingStandBetweenKingAndAttacker(side: boolean): boolean {
         const king = this.figures.filter((f) => f.type === "king" && f.color === side)[0]
 
@@ -204,14 +212,7 @@ export class ChessBoard {
             if (Math.abs(diffI) === Math.abs(diffJ)) {
                 if (diffI > 0 && diffJ > 0) {
                     for (let c = 1; c < diffI; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI + c, king.coordinateJ + c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, king.coordinateJ + c)) {
                             return true
                         }
                     }
@@ -219,14 +220,7 @@ export class ChessBoard {
                 }
                 if (diffI < 0 && diffJ > 0) {
                     for (let c = 1; c < diffJ; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI - c, king.coordinateJ + c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI - c, king.coordinateJ + c)) {
                             return true
                         }
                     }
@@ -234,14 +228,7 @@ export class ChessBoard {
                 }
                 if (diffI < 0 && diffJ < 0) {
                     for (let c = 1; c < Math.abs(diffI); c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI - c, king.coordinateJ - c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI - c, king.coordinateJ - c)) {
                             return true
                         }
                     }
@@ -249,14 +236,7 @@ export class ChessBoard {
                 }
                 if (diffI > 0 && diffJ < 0) {
                     for (let c = 1; c < diffI; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI + c, king.coordinateJ - c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, king.coordinateJ - c)) {
                             return true
                         }
                     }
@@ -268,14 +248,7 @@ export class ChessBoard {
             if (Math.abs(diffI) === Math.abs(diffJ)) {
                 if (diffI > 0 && diffJ > 0) {
                     for (let c = 1; c < diffI; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI + c, king.coordinateJ + c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, king.coordinateJ + c)) {
                             return true
                         }
                     }
@@ -283,14 +256,7 @@ export class ChessBoard {
                 }
                 if (diffI < 0 && diffJ > 0) {
                     for (let c = 1; c < diffJ; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI - c, king.coordinateJ + c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI - c, king.coordinateJ + c)) {
                             return true
                         }
                     }
@@ -298,14 +264,7 @@ export class ChessBoard {
                 }
                 if (diffI < 0 && diffJ < 0) {
                     for (let c = 1; c < Math.abs(diffI); c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI - c, king.coordinateJ - c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI - c, king.coordinateJ - c)) {
                             return true
                         }
                     }
@@ -313,14 +272,7 @@ export class ChessBoard {
                 }
                 if (diffI > 0 && diffJ < 0) {
                     for (let c = 1; c < diffI; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI + c, king.coordinateJ - c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, king.coordinateJ - c)) {
                             return true
                         }
                     }
@@ -329,14 +281,7 @@ export class ChessBoard {
             } else {
                 if (diffI === 0 && diffJ > 0) {
                     for (let c = 1; c < diffJ; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(attacker.coordinateI, king.coordinateI + c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI, king.coordinateI + c)) {
                             return true
                         }
                     }
@@ -344,14 +289,7 @@ export class ChessBoard {
                 }
                 if (diffI === 0 && diffJ < 0) {
                     for (let c = 1; c < Math.abs(diffJ); c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(attacker.coordinateI, king.coordinateI - c, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI, king.coordinateI - c)) {
                             return true
                         }
                     }
@@ -359,14 +297,7 @@ export class ChessBoard {
                 }
                 if (diffI > 0 && diffJ === 0) {
                     for (let c = 1; c < diffI; c++) {
-                        if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(king.coordinateI + c, attacker.coordinateJ, this)
-                            )
-                        ) {
+                        if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, attacker.coordinateJ)) {
                             return true
                         }
                     }
@@ -375,12 +306,7 @@ export class ChessBoard {
                 if (diffI < 0 && diffJ === 0) {
                     for (let c = 1; c < Math.abs(diffI); c++) {
                         if (
-                            this.figures.some(
-                                (f) =>
-                                    f.color === side &&
-                                    f.type !== "king" &&
-                                    f.canMove(attacker.coordinateI - c, attacker.coordinateJ, this)
-                            )
+                            this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI - c, attacker.coordinateJ)
                         ) {
                             return true
                         }
@@ -392,14 +318,7 @@ export class ChessBoard {
         if (attacker && attacker.type === "rook") {
             if (diffI === 0 && diffJ > 0) {
                 for (let c = 1; c < diffJ; c++) {
-                    if (
-                        this.figures.some(
-                            (f) =>
-                                f.color === side &&
-                                f.type !== "king" &&
-                                f.canMove(attacker.coordinateI, king.coordinateI + c, this)
-                        )
-                    ) {
+                    if (this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI, king.coordinateI + c)) {
                         return true
                     }
                 }
@@ -407,14 +326,7 @@ export class ChessBoard {
             }
             if (diffI === 0 && diffJ < 0) {
                 for (let c = 1; c < Math.abs(diffJ); c++) {
-                    if (
-                        this.figures.some(
-                            (f) =>
-                                f.color === side &&
-                                f.type !== "king" &&
-                                f.canMove(attacker.coordinateI, king.coordinateI - c, this)
-                        )
-                    ) {
+                    if (this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI, king.coordinateI - c)) {
                         return true
                     }
                 }
@@ -422,14 +334,7 @@ export class ChessBoard {
             }
             if (diffI > 0 && diffJ === 0) {
                 for (let c = 1; c < diffI; c++) {
-                    if (
-                        this.figures.some(
-                            (f) =>
-                                f.color === side &&
-                                f.type !== "king" &&
-                                f.canMove(king.coordinateI + c, attacker.coordinateJ, this)
-                        )
-                    ) {
+                    if (this.checkIfAnyFigureCanStandBetween(side, king.coordinateI + c, attacker.coordinateJ)) {
                         return true
                     }
                 }
@@ -437,14 +342,7 @@ export class ChessBoard {
             }
             if (diffI < 0 && diffJ === 0) {
                 for (let c = 1; c < Math.abs(diffI); c++) {
-                    if (
-                        this.figures.some(
-                            (f) =>
-                                f.color === side &&
-                                f.type !== "king" &&
-                                f.canMove(attacker.coordinateI - c, attacker.coordinateJ, this)
-                        )
-                    ) {
+                    if (this.checkIfAnyFigureCanStandBetween(side, attacker.coordinateI - c, attacker.coordinateJ)) {
                         return true
                     }
                 }
@@ -455,6 +353,7 @@ export class ChessBoard {
     }
 
     checkIfKingUnderCheckMate(side: boolean): boolean {
+        console.log(this.canAnythingStandBetweenKingAndAttacker(side))
         const isKingUnderAttack = this.checkIfKingUnderAttack(side)
         const kingCantEscape = !this.canKingEscape(side)
         const attackerCantBeKilled = !this.canAttackingFigureBeKilled(side)
@@ -473,19 +372,22 @@ export class ChessBoard {
         } else return (this.turn = true)
     }
 
-    saveInHistory(figure: IFigure, i: number, j: number, killedFigure: IFigure | null) {
+    saveInHistory(figure: IFigure, i: number, j: number, killedFigure: IFigure | null, isCastling: boolean) {
         const current = { i: figure.coordinateI, j: figure.coordinateJ }
         const killed = killedFigure && { i: killedFigure.coordinateI, j: killedFigure.coordinateJ }
         const killedFigureCoordinates = killedFigure ? killed : null
         this.history.push({
             figure,
+            figureDidMove: figure.didMove,
             from: current,
             to: { i, j },
             killedFigure,
             killedFigureCoordinates,
+            isCastling,
         })
     }
-    moveBack() {
+
+    private moveBackWithoutToggleTurn() {
         const history = this.history
 
         if (history.length === 0) {
@@ -500,27 +402,24 @@ export class ChessBoard {
             killedFigure.coordinateI = killedFigureInitialPosition.i
             killedFigure.coordinateJ = killedFigureInitialPosition.j
         }
-        if (figure.type === "king") {
-            if (figure.castlingRight) {
-                const rook = this.figures.filter((r) => r.castling === true)[0]
-                rook.move(7, 7, this)
-                rook.didMove = false
-            }
-            if (figure.castlingLeft) {
-                const rook = this.figures.filter((r) => r.castling === true)[0]
-                rook.move(7, 0, this)
-                rook.didMove = false
-            }
-            figure.move(lastItem.from.i, lastItem.from.j, this)
+        if (lastItem.isCastling) {
             figure.didMove = false
-            this.toggleTurn()
+            const rook = this.getFigure(7, 5)
+            const rookCorner = figure.coordinateJ === 6 ? 7 : 0
+            rook.move(figure.coordinateI, rookCorner, this)
+            rook.didMove = false
         }
+
         figure.move(lastItem.from.i, lastItem.from.j, this)
+        figure.didMove = lastItem.figureDidMove
+    }
+
+    moveBack() {
+        this.moveBackWithoutToggleTurn()
         this.toggleTurn()
     }
 
     select(i: number, j: number) {
-        // if nothingis chosen
         const selectedFigure = this.getFigure(i, j)
         if (selectedFigure) {
             if (selectedFigure.color === this.turn) {
@@ -530,25 +429,55 @@ export class ChessBoard {
         }
     }
 
-    makeMove(i: number, j: number) {
-        // if smth is chosen
+    private makeMoveWithoutToggleTurn(i: number, j: number) {
         const selectedFigure = this.getSelectedFigure()
+
         const targetFigure = this.getFigure(i, j)
-        if (selectedFigure) {
-            if (selectedFigure.canMove(i, j, this)) {
-                this.saveInHistory(selectedFigure, i, j, targetFigure || null)
-                if (targetFigure) {
-                    targetFigure.die()
-                }
-                selectedFigure.move(i, j, this)
-                if (selectedFigure.type === "pawn" && selectedFigure.promotion) {
-                    this.promotion = true
-                }
-                this.toggleTurn()
-                this.deselect()
-            }
-        } else {
-            this.deselect()
+
+        let castling = false
+        if (selectedFigure.type === "king" && (j === 2 || j === 6)) {
+            castling = true
         }
+        this.saveInHistory(selectedFigure, i, j, targetFigure || null, castling)
+        if (targetFigure) {
+            targetFigure.die()
+        }
+        selectedFigure.move(i, j, this)
+    }
+
+    makeMove(i: number, j: number) {
+        const selectedFigure = this.getSelectedFigure()
+        if (!selectedFigure) {
+            this.deselect()
+            return
+        }
+        if (!selectedFigure.canMove(i, j, this)) {
+            return
+        }
+        this.makeMoveWithoutToggleTurn(i, j)
+        this.toggleTurn()
+        this.deselect()
+    }
+
+    private checkifFigureMoveCauseCheckMate(i: number, j: number) {
+        this.makeMoveWithoutToggleTurn(i, j)
+        const isKingUnderAttack = this.checkIfKingUnderAttack(this.turn)
+        this.moveBackWithoutToggleTurn()
+        return !isKingUnderAttack
+    }
+
+    public canMove(i: number, j: number) {
+        if (i === 7 && j === 6) {
+            console.log("fuchu")
+        }
+        const selectedFigure = this.getSelectedFigure()
+        if (!selectedFigure) {
+            return false
+        }
+        if (!selectedFigure.canMove(i, j, this)) {
+            return false
+        }
+        const moveDoNotCauseCheckMate = this.checkifFigureMoveCauseCheckMate(i, j)
+        return moveDoNotCauseCheckMate
     }
 }

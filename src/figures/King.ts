@@ -37,6 +37,7 @@ export class King implements IFigure {
         
         // castling
         if (this.didMove === false) {
+            
             const rookRight = chessboard.getFigure(this.coordinateI, this.coordinateJ + 3)
             const rookLeft = chessboard.getFigure(this.coordinateI, this.coordinateJ - 4)
             if (
