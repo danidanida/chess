@@ -1,4 +1,4 @@
-import { ChessBoard} from "./Chessboard"
+import { ChessBoard } from "./Chessboard"
 import { IFigure } from "./Figure"
 
 export class King implements IFigure {
@@ -8,18 +8,14 @@ export class King implements IFigure {
         this.coordinateJ = coordinateJ
         this.type = "king"
         this.didMove = false
-        this.castlingRight = false
-        this.castlingLeft = false
     }
     color: boolean
     coordinateI: number
     coordinateJ: number
     type: string
     didMove: boolean
-    castlingRight: boolean
-    castlingLeft:boolean
 
-    canMove(targetI: number, targetJ: number, chessboard:ChessBoard): boolean | undefined {
+    canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined {
         const cellHasFigure = chessboard.isFigureOn(targetI, targetJ)
 
         if (cellHasFigure) {
@@ -29,15 +25,15 @@ export class King implements IFigure {
             }
         }
 
-        if(this.color === chessboard.turn) { // avoids infinite loop (canMove of king calls canMove of oposite king)
+        if (this.color === chessboard.turn) { // avoids infinite loop (canMove of king calls canMove of oposite king)
             if (chessboard.checkIfCellIsUnderAttack(this.color, targetI, targetJ)) {
                 return false
             }
         }
-        
+
         // castling
         if (this.didMove === false) {
-            
+
             const rookRight = chessboard.getFigure(this.coordinateI, this.coordinateJ + 3)
             const rookLeft = chessboard.getFigure(this.coordinateI, this.coordinateJ - 4)
             if (
@@ -87,24 +83,22 @@ export class King implements IFigure {
         }
     }
 
-    move(targetI: number, targetJ: number, chessboard:ChessBoard): void {
+    move(targetI: number, targetJ: number, chessboard: ChessBoard): void {
+
+        if(!this.didMove) {
+            if(targetJ === 6) { // short castling
+                const rook = chessboard.getFigure(this.coordinateI, 7)
+                rook.move(this.coordinateI, 5, chessboard)
+            } else if (targetJ === 2) {
+                const rook = chessboard.getFigure(this.coordinateI, 0)
+                rook.move(this.coordinateI, 3, chessboard)
+            }
+        }
+        
         this.didMove = true
-        //castling
-        if (targetJ === this.coordinateJ + 2) {
-            const rook = chessboard.getFigure(this.coordinateI, this.coordinateJ + 3)
-            rook.move(this.coordinateI, this.coordinateJ + 1, chessboard)
-            rook.castling = true
-            this.castlingRight = true
-        }
-        if (targetJ === this.coordinateJ - 2) {
-            const rook = chessboard.getFigure(this.coordinateI, this.coordinateJ - 4)
-            rook.move(this.coordinateI, this.coordinateJ - 1,chessboard)
-            rook.castling = true
-            this.castlingLeft = true
-        }
         this.coordinateI = targetI
         this.coordinateJ = targetJ
     }
 
-    die() {}
+    die() { }
 }

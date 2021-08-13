@@ -7,9 +7,6 @@ export interface IFigure {
     type: string
     didMove?: boolean
     promotion?: boolean
-    castlingRight?: boolean
-    castlingLeft?: boolean
-    castling?: boolean
 
     canMove(targetI: number, targetJ: number, chessboard: ChessBoard): boolean | undefined
 

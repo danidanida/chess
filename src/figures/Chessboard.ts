@@ -31,7 +31,7 @@ export class ChessBoard {
             new Knight(false, 0, 6),
 
             new Knight(true, 7, 1),
-            //new Knight(true, 7, 6),
+            new Knight(true, 7, 6),
 
             new Rook(true, 7, 0),
             new Rook(true, 7, 7),
@@ -46,7 +46,7 @@ export class ChessBoard {
             new King(false, 0, 4),
 
             new Bishop(true, 7, 2),
-            //new Bishop(true, 7, 5),
+            new Bishop(true, 7, 5),
 
             new Bishop(false, 0, 2),
             new Bishop(false, 0, 5),
@@ -403,11 +403,18 @@ export class ChessBoard {
             killedFigure.coordinateJ = killedFigureInitialPosition.j
         }
         if (lastItem.isCastling) {
-            figure.didMove = false
-            const rook = this.getFigure(7, 5)
-            const rookCorner = figure.coordinateJ === 6 ? 7 : 0
-            rook.move(figure.coordinateI, rookCorner, this)
-            rook.didMove = false
+            const isShortCastling = figure.coordinateJ === 6;
+
+            if (isShortCastling) {
+                const rook = this.getFigure(figure.coordinateI, 5);
+                rook.move(figure.coordinateI, 7, this);
+                rook.didMove = false;
+            }
+            else {
+                const rook = this.getFigure(figure.coordinateI, 3);
+                rook.move(figure.coordinateI, 0, this);
+                rook.didMove = false;
+            }
         }
 
         figure.move(lastItem.from.i, lastItem.from.j, this)
