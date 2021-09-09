@@ -98,12 +98,14 @@ const Board = () => {
                 <thead></thead>
                 <tbody>{drawChessBoard()}</tbody>
             </table>
-            <button className="chess_reset_game_btn" onClick={handleStartNewGameClick}>
+            <div className="chess_buttons_area">
+            <button className="chess_btn" onClick={handleStartNewGameClick}>
                 New Game
             </button>
-            <button className="chess_reset_game_btn" onClick={handleBack}>
+            <button className="chess_btn" onClick={handleBack}>
                 Back
             </button>
+            </div>
         </div>
     )
 }
