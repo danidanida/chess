@@ -17,13 +17,13 @@ You can play it [here](https://danidanida.github.io/dchess/)
     git clone https://github.com/danidanida/dchess.git
     ```
 
-    2. Install NPM packages
+2. Install NPM packages
 
     ```sh
     npm install
     ```
 
-    3. Run the project
+3. Run the project
 
     ```sh
     npm run start
