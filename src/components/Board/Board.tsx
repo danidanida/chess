@@ -2,9 +2,11 @@ import "./Board.css"
 import { useState } from "react"
 import { ChessBoard } from "../../figures/Chessboard"
 import Cell from "../Cell/Cell"
+//import getInitialFigures from '../../figures/initialFigures';
 
 const Board = () => {
     const [render, setRender] = useState(0)
+    //const initialFigures = getInitialFigures()
     const [chessboard, setChessboard] = useState<ChessBoard>(() => new ChessBoard())
 
     function handleStartNewGameClick() {
@@ -99,12 +101,12 @@ const Board = () => {
                 <tbody>{drawChessBoard()}</tbody>
             </table>
             <div className="chess_buttons_area">
-            <button className="chess_btn" onClick={handleStartNewGameClick}>
-                New Game
-            </button>
-            <button className="chess_btn" onClick={handleBack}>
-                Back
-            </button>
+                <button className="chess_btn" onClick={handleStartNewGameClick}>
+                    New Game
+                </button>
+                <button className="chess_btn" onClick={handleBack}>
+                    Back
+                </button>
             </div>
         </div>
     )
