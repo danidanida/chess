@@ -353,7 +353,6 @@ export class ChessBoard {
     }
 
     checkIfKingUnderCheckMate(side: boolean): boolean {
-        console.log(this.canAnythingStandBetweenKingAndAttacker(side))
         const isKingUnderAttack = this.checkIfKingUnderAttack(side)
         const kingCantEscape = !this.canKingEscape(side)
         const attackerCantBeKilled = !this.canAttackingFigureBeKilled(side)
@@ -363,7 +362,7 @@ export class ChessBoard {
             return true
         }
         this.checkMate = false
-        return false
+        return false 
     }
 
     toggleTurn() {
