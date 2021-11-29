@@ -4,26 +4,23 @@ import { ChessBoard } from "./Chessboard"
 
 describe("Pawn", () => {
     const chessboard = new ChessBoard()
-    const pawn__01 = new Pawn(true, 6, 0)
-    const pawn__02 = new Pawn(true, 6, 3)
-
-    test("defines canMove()", () => {
-        expect(typeof pawn__01.canMove).toBe("function")
-    })
 
     it("describes that white pawn can move 1 cell upfront", () => {
-        const resultPawn__01 = pawn__01.canMove(5, 0, chessboard)
-        expect(resultPawn__01).toBe(true)
+        const pawn = new Pawn(true, 6, 0)
+        const result = pawn.canMove(5, 0, chessboard)
+        expect(result).toBe(true)
     })
     it("describes that white pawn can move 2 cells upfront", () => {
-        const resultPawn__02 = pawn__02.canMove(4, 3, chessboard)
+        const pawn = new Pawn(true, 6, 3)
+        const result = pawn.canMove(4, 3, chessboard)
 
-        expect(resultPawn__02).toBe(true)
+        expect(result).toBe(true)
     })
 
     it("describes that white pawn can't move right/left", () => {
-        const resultPawn__02 = pawn__02.canMove(6, 2, chessboard)
+        const pawn = new Pawn(true, 6, 3)
+        const result = pawn.canMove(6, 2, chessboard)
 
-        expect(resultPawn__02).toBe(false)
+        expect(result).toBe(false)
     })
 })
